@@ -7,7 +7,9 @@ const {
     createProduct,
     updateProduct,
     deleteProduct,
-    getAllCategories
+    getAllCategories,
+    getAllTypes,
+    createType
 } = require("../controllers/admin/adminProductController");
 
 // Authentication routes
@@ -24,5 +26,9 @@ Router.delete("/products/:id", deleteProduct);
 
 // Categories route
 Router.get("/categories", getAllCategories);
+
+// Types routes
+Router.get("/types", getAllTypes);
+Router.post("/types", createType);
 
 module.exports = Router;

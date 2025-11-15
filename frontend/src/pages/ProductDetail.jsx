@@ -125,8 +125,8 @@ const ProductDetail = () => {
                                         src={image}
                                         alt={`${product.title} ${index + 1}`}
                                         className={`w-16 h-16 object-cover rounded-lg cursor-pointer border-2 transition-all ${selectedImage === index
-                                                ? 'border-gray-900 ring-2 ring-gray-900 ring-opacity-50'
-                                                : 'border-gray-200 hover:border-gray-400'
+                                            ? 'border-gray-900 ring-2 ring-gray-900 ring-opacity-50'
+                                            : 'border-gray-200 hover:border-gray-400'
                                             }`}
                                         onClick={() => setSelectedImage(index)}
                                     />
@@ -159,6 +159,15 @@ const ProductDetail = () => {
                                 <span className="text-gray-600">Category:</span>
                                 <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
                                     {product.category.name}
+                                </span>
+                            </div>
+                        )}
+
+                        {product.Type && (
+                            <div className="flex items-center space-x-2">
+                                <span className="text-gray-600">Type:</span>
+                                <span className="bg-blue-100 px-3 py-1 rounded-full text-sm font-medium text-blue-800">
+                                    {product.Type.name}
                                 </span>
                             </div>
                         )}
@@ -204,8 +213,8 @@ const ProductDetail = () => {
 
                         {product.inStock !== undefined && (
                             <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${product.inStock
-                                    ? 'bg-green-100 text-green-800'
-                                    : 'bg-red-100 text-red-800'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-red-100 text-red-800'
                                 }`}>
                                 {product.inStock ? '✓ In Stock' : '✗ Out of Stock'}
                             </div>
@@ -219,8 +228,8 @@ const ProductDetail = () => {
                         <div className="flex space-x-8">
                             <button
                                 className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'description'
-                                        ? 'border-gray-900 text-gray-900'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setActiveTab('description')}
                             >
@@ -228,8 +237,8 @@ const ProductDetail = () => {
                             </button>
                             <button
                                 className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'notes'
-                                        ? 'border-gray-900 text-gray-900'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setActiveTab('notes')}
                             >
@@ -237,8 +246,8 @@ const ProductDetail = () => {
                             </button>
                             <button
                                 className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'ingredients'
-                                        ? 'border-gray-900 text-gray-900'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setActiveTab('ingredients')}
                             >
@@ -246,8 +255,8 @@ const ProductDetail = () => {
                             </button>
                             <button
                                 className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'reviews'
-                                        ? 'border-gray-900 text-gray-900'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
                                     }`}
                                 onClick={() => setActiveTab('reviews')}
                             >
@@ -315,58 +324,79 @@ const ProductDetail = () => {
                             <div className="space-y-8">
                                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Fragrance Composition</h3>
 
-                                <div className="space-y-6">
-                                    <div className="bg-pink-50 p-6 rounded-lg border border-pink-200">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center">
-                                                <span className="text-2xl mr-3">🌸</span>
-                                                <h4 className="text-xl font-semibold text-gray-900">Top Notes</h4>
+                                {product.notes ? (
+                                    <div className="space-y-6">
+                                        {/* Top Notes */}
+                                        {product.notes.top && product.notes.top.length > 0 && (
+                                            <div className="bg-pink-50 p-6 rounded-lg border border-pink-200">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <div className="flex items-center">
+                                                        <span className="text-2xl mr-3">🌸</span>
+                                                        <h4 className="text-xl font-semibold text-gray-900">Top Notes</h4>
+                                                    </div>
+                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">First 15 minutes</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {product.notes.top.map((note, index) => (
+                                                        <span key={index} className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                            {note}
+                                                        </span>
+                                                    ))}
+                                                </div>
                                             </div>
-                                            <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">First 15 minutes</span>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">Bergamot</span>
-                                            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">Lemon</span>
-                                            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">Pink Pepper</span>
+                                        )}
+
+                                        {/* Middle Notes */}
+                                        {product.notes.middle && product.notes.middle.length > 0 && (
+                                            <div className="bg-rose-50 p-6 rounded-lg border border-rose-200">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <div className="flex items-center">
+                                                        <span className="text-2xl mr-3">🌹</span>
+                                                        <h4 className="text-xl font-semibold text-gray-900">Heart Notes</h4>
+                                                    </div>
+                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">15 minutes - 2 hours</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {product.notes.middle.map((note, index) => (
+                                                        <span key={index} className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                            {note}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Base Notes */}
+                                        {product.notes.base && product.notes.base.length > 0 && (
+                                            <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
+                                                <div className="flex items-center justify-between mb-4">
+                                                    <div className="flex items-center">
+                                                        <span className="text-2xl mr-3">🌰</span>
+                                                        <h4 className="text-xl font-semibold text-gray-900">Base Notes</h4>
+                                                    </div>
+                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">2+ hours</span>
+                                                </div>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {product.notes.base.map((note, index) => (
+                                                        <span key={index} className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
+                                                            {note}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="bg-gray-50 p-6 rounded-lg">
+                                            <h4 className="text-xl font-semibold text-gray-900 mb-3">The Scent Journey</h4>
+                                            <p className="text-gray-600">Experience how this fragrance evolves throughout the day, from the initial bright burst to the deep, lasting base notes that linger on your skin.</p>
                                         </div>
                                     </div>
-
-                                    <div className="bg-rose-50 p-6 rounded-lg border border-rose-200">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center">
-                                                <span className="text-2xl mr-3">🌹</span>
-                                                <h4 className="text-xl font-semibold text-gray-900">Heart Notes</h4>
-                                            </div>
-                                            <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">15 minutes - 2 hours</span>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            <span className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-medium">Rose</span>
-                                            <span className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-medium">Jasmine</span>
-                                            <span className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-medium">Patchouli</span>
-                                        </div>
+                                ) : (
+                                    <div className="text-center py-12">
+                                        <h4 className="text-xl font-semibold text-gray-900 mb-3">Fragrance Notes</h4>
+                                        <p className="text-gray-600">Detailed fragrance notes for this product will be available soon.</p>
                                     </div>
-
-                                    <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <div className="flex items-center">
-                                                <span className="text-2xl mr-3">🌰</span>
-                                                <h4 className="text-xl font-semibold text-gray-900">Base Notes</h4>
-                                            </div>
-                                            <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">2+ hours</span>
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">Oudh</span>
-                                            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">Sandalwood</span>
-                                            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">Amber</span>
-                                            <span className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">Musk</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="bg-gray-50 p-6 rounded-lg">
-                                    <h4 className="text-xl font-semibold text-gray-900 mb-3">The Scent Journey</h4>
-                                    <p className="text-gray-600">Experience how this fragrance evolves throughout the day, from the initial bright burst of citrus to the deep, sensual base that lingers on your skin.</p>
-                                </div>
+                                )}
                             </div>
                         )}
 

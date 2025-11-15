@@ -8,6 +8,12 @@ const productSchema = new mongoose.Schema({
     rating: { type: Number, default: 0 },
     price: { type: Number, required: true },
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+    notes: {
+        top: [String],
+        middle: [String],
+        base: [String]
+    },
+    Type: { type: mongoose.Schema.Types.ObjectId, ref: 'Type' },
     stock: { type: Number, required: true },
     featured: { type: Boolean, default: false },
     createdAt: { type: Date, default: Date.now },

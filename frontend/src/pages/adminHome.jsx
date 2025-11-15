@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAdminLogout, useAdminProducts, useAdminCategories, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage } from '../hooks/adminHooks';
+import { useAdminLogout, useAdminProducts, useAdminCategories, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage } from '../hooks/adminHooks';
 
 const AdminHome = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -9,6 +9,7 @@ const AdminHome = () => {
     const logoutMutation = useAdminLogout();
     const { data: products, isLoading: productsLoading } = useAdminProducts();
     const { data: categories, isLoading: categoriesLoading } = useAdminCategories();
+    const { data: types, isLoading: typesLoading } = useAdminTypes();
 
     const createProductMutation = useCreateProduct();
     const updateProductMutation = useUpdateProduct();
@@ -110,6 +111,7 @@ const AdminHome = () => {
                                             <tr>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Featured</th>
@@ -130,6 +132,9 @@ const AdminHome = () => {
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                         {product.category?.name || 'No Category'}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                        {product.Type?.name || 'No Type'}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.price}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.stock}</td>
@@ -192,6 +197,7 @@ const AdminHome = () => {
                 <ProductModal
                     product={editingProduct}
                     categories={categories}
+                    types={types}
                     onClose={() => setShowModal(false)}
                     createMutation={createProductMutation}
                     updateMutation={updateProductMutation}
@@ -202,13 +208,19 @@ const AdminHome = () => {
 };
 
 // Product Modal Component
-const ProductModal = ({ product, categories, onClose, createMutation, updateMutation }) => {
+const ProductModal = ({ product, categories, types, onClose, createMutation, updateMutation }) => {
     const [formData, setFormData] = useState({
         title: product?.title || '',
         description: product?.description || '',
         picture: product?.picture || '',
         price: product?.price || '',
         category: product?.category?._id || '',
+        Type: product?.Type?._id || '',
+        notes: {
+            top: product?.notes?.top || [],
+            middle: product?.notes?.middle || [],
+            base: product?.notes?.base || []
+        },
         stock: product?.stock || '',
         featured: product?.featured || false
     });
@@ -287,6 +299,17 @@ const ProductModal = ({ product, categories, onClose, createMutation, updateMuta
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleNotesChange = (noteType, value) => {
+        const notesArray = value.split(',').map(note => note.trim()).filter(note => note);
+        setFormData(prev => ({
+            ...prev,
+            notes: {
+                ...prev.notes,
+                [noteType]: notesArray
+            }
         }));
     };
 
@@ -402,6 +425,61 @@ const ProductModal = ({ product, categories, onClose, createMutation, updateMuta
                                     </option>
                                 ))}
                             </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Type (EDP/EDT/etc.)</label>
+                            <select
+                                name="Type"
+                                value={formData.Type}
+                                onChange={handleChange}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            >
+                                <option value="">Select Type</option>
+                                {types?.map(type => (
+                                    <option key={type._id} value={type._id}>
+                                        {type.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* Fragrance Notes Section */}
+                        <div className="space-y-3">
+                            <h4 className="text-sm font-medium text-gray-700">Fragrance Notes</h4>
+
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600">Top Notes</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter notes separated by commas (e.g., Bergamot, Lemon, Orange)"
+                                    value={formData.notes.top.join(', ')}
+                                    onChange={(e) => handleNotesChange('top', e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600">Middle Notes</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter notes separated by commas (e.g., Rose, Jasmine, Geranium)"
+                                    value={formData.notes.middle.join(', ')}
+                                    onChange={(e) => handleNotesChange('middle', e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600">Base Notes</label>
+                                <input
+                                    type="text"
+                                    placeholder="Enter notes separated by commas (e.g., Sandalwood, Vanilla, Musk)"
+                                    value={formData.notes.base.join(', ')}
+                                    onChange={(e) => handleNotesChange('base', e.target.value)}
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                />
+                            </div>
                         </div>
 
                         <div className="flex items-center">

@@ -22,6 +22,8 @@ export const adminProductAPI = {
   updateProduct: (id, productData) => api.put(`/admin/products/${id}`, productData),
   deleteProduct: (id) => api.delete(`/admin/products/${id}`),
   getAllCategories: () => api.get("/admin/categories"),
+  getAllTypes: () => api.get("/admin/types"),
+  createType: (typeData) => api.post("/admin/types", typeData),
 };
 
 // Image Upload APIs

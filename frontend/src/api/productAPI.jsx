@@ -58,6 +58,18 @@ const getProductsByCategory = async (categoryId) => {
 }
 
 
-export { getAllProducts, getFeaturedProducts, getProductById, getProductsByCategory };
+const getAllCategories = async () => {
+    try {
+        console.log('Making API call to:', `${API_BASE_URL}/products/get-all-categories`);
+        const res = await api.get("/products/get-all-categories");
+        console.log('API Response:', res.data);
+        return res.data;
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+export { getAllProducts, getFeaturedProducts, getProductById, getProductsByCategory, getAllCategories };
 export default getAllProducts;
 

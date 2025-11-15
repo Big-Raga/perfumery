@@ -1,4 +1,5 @@
 const Product = require("../models/product")
+const Category = require("../models/category")
 
 const getAllProducts = async (req, res) => {
     try {
@@ -31,10 +32,22 @@ const getProductByCategory = async (req, res) => {
     }
 }
 
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await Category.find().select("_id name description");
+        res.json(categories);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Server Error' });
+    }
+};
+
 const getProductById = async (req, res) => {
     const { productId } = req.params;
     try {
-        const foundProduct = await Product.findById(productId).populate("category");
+        const foundProduct = await Product.findById(productId)
+            .populate("category")
+            .populate("Type");
         if (!foundProduct) {
             return res.status(404).json({ message: 'Product not found' });
         }
@@ -50,5 +63,6 @@ module.exports = {
     getAllProducts,
     getFeaturedProducts,
     getProductByCategory,
-    getProductById
+    getProductById,
+    getAllCategories
 };

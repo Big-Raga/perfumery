@@ -1,10 +1,13 @@
 const Product = require("../../models/product");
 const Category = require("../../models/category");
+const Type = require("../../models/Type");
 
 // Get all products for admin (with full details)
 const getAllProductsAdmin = async (req, res) => {
     try {
-        const products = await Product.find().populate("category");
+        const products = await Product.find()
+            .populate("category")
+            .populate("Type");
         res.status(200).json({
             data: products,
             message: "Products retrieved successfully"
@@ -21,7 +24,9 @@ const getAllProductsAdmin = async (req, res) => {
 const getProductByIdAdmin = async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await Product.findById(id).populate("category");
+        const product = await Product.findById(id)
+            .populate("category")
+            .populate("Type");
 
         if (!product) {
             return res.status(404).json({
@@ -51,6 +56,8 @@ const createProduct = async (req, res) => {
             picture,
             price,
             category,
+            notes,
+            Type,
             stock,
             featured
         } = req.body;
@@ -70,12 +77,14 @@ const createProduct = async (req, res) => {
             picture,
             price,
             category,
+            notes,
+            Type,
             stock,
             featured: featured || false
         });
 
         await newProduct.save();
-        await newProduct.populate("category");
+        await newProduct.populate(["category", "Type"]);
 
         res.status(201).json({
             data: newProduct,
@@ -99,7 +108,7 @@ const updateProduct = async (req, res) => {
             id,
             updateData,
             { new: true, runValidators: true }
-        ).populate("category");
+        ).populate(["category", "Type"]);
 
         if (!updatedProduct) {
             return res.status(404).json({
@@ -162,11 +171,63 @@ const getAllCategories = async (req, res) => {
     }
 };
 
+// Get all types for dropdown
+const getAllTypes = async (req, res) => {
+    try {
+        const types = await Type.find();
+        res.status(200).json({
+            data: types,
+            message: "Types retrieved successfully"
+        });
+    } catch (error) {
+        res.status(500).json({
+            data: null,
+            message: "Server error"
+        });
+    }
+};
+
+// Create new type
+const createType = async (req, res) => {
+    try {
+        const { name } = req.body;
+
+        if (!name) {
+            return res.status(400).json({
+                data: null,
+                message: "Type name is required"
+            });
+        }
+
+        const newType = new Type({ name });
+        await newType.save();
+
+        res.status(201).json({
+            data: newType,
+            message: "Type created successfully"
+        });
+    } catch (error) {
+        if (error.code === 11000) {
+            res.status(400).json({
+                data: null,
+                message: "Type name already exists"
+            });
+        } else {
+            res.status(500).json({
+                data: null,
+                message: "Server error"
+            });
+        }
+    }
+};
+
 module.exports = {
     getAllProductsAdmin,
     getProductByIdAdmin,
     createProduct,
     updateProduct,
     deleteProduct,
-    getAllCategories
+    getAllCategories,
+    getAllTypes,
+    createType
 };

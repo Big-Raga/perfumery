@@ -73,6 +73,32 @@ export const useAdminCategories = () => {
     });
 };
 
+// Get all types
+export const useAdminTypes = () => {
+    return useQuery({
+        queryKey: ['admin-types'],
+        queryFn: async () => {
+            const response = await adminProductAPI.getAllTypes();
+            return response.data.data;
+        },
+    });
+};
+
+// Create type
+export const useCreateType = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (typeData) => adminProductAPI.createType(typeData),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-types'] });
+        },
+        onError: (error) => {
+            console.error('Failed to create type:', error.response?.data?.message);
+        }
+    });
+};
+
 // Create product
 export const useCreateProduct = () => {
     const queryClient = useQueryClient();

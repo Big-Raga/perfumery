@@ -269,7 +269,9 @@ const UserHome = () => {
                                                     ))}
                                                     <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
                                                 </div>
-                                                <p className="text-sm text-gray-600">50ml • Eau de Parfum</p>
+                                                <p className="text-sm text-gray-600">
+                                                    {product.Type ? product.Type.name : 'Eau de Parfum'}
+                                                </p>
                                             </div>
 
                                             {/* Price and Action */}
