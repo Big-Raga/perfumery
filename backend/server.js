@@ -13,8 +13,6 @@ connectDB();
 app.use('/static', express.static('images'));
 
 
-// Initialize database with seeders
-initializeDatabase();
 
 // Middleware
 app.use(cors({
