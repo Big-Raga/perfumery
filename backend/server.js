@@ -16,7 +16,7 @@ app.use('/static', express.static('images'));
 
 // Middleware
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'https://perfumery-ruddy.vercel.app', // Your frontend URL from env
+  origin: process.env.FRONTEND_URL || 'https://www.houseofouds.com/', // Your frontend URL from env
   credentials: true // Allow cookies to be sent
 }));
 app.use(express.json());
