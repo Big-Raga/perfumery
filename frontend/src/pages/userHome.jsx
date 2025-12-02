@@ -21,7 +21,7 @@ const UserHome = () => {
 
     const heroSlides = [
         {
-            title: "Authentic Oudh",
+            title: "Authentic Oud",
             subtitle: "Discover our signature collection",
             image: "hero.jpg" // You can replace this with the actual path to your uploaded image
         }
@@ -248,7 +248,7 @@ const UserHome = () => {
                                         <div className="p-5 md:p-6">
                                             {/* Product Title */}
                                             <div className="mb-3">
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">House of Oudh</p>
+                                                <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">House of Oud</p>
                                                 <h3 className="text-lg md:text-xl font-semibold text-gray-900 leading-tight">
                                                     {product.title}
                                                 </h3>
@@ -399,9 +399,9 @@ const UserHome = () => {
                             className="sm:col-span-2 md:col-span-1"
                         >
                             <div className="flex items-center space-x-3 mb-4">
-                                <img src="/logo.svg" alt="House of Oudh" className="h-6 md:h-8 w-6 md:w-8" />
+                                <img src="/logo.svg" alt="House of Oud" className="h-6 md:h-8 w-6 md:w-8" />
                                 <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
-                                    House of Oudh
+                                    House of Oud
                                 </span>
                             </div>
                             <p className="text-gray-400 text-sm md:text-base">
@@ -436,7 +436,7 @@ const UserHome = () => {
                     </div>
 
                     <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-400">
-                        <p className="text-sm md:text-base">&copy; 2024 House of Oudh. All rights reserved.</p>
+                        <p className="text-sm md:text-base">&copy; 2024 House of Oud. All rights reserved.</p>
                     </div>
                 </div>
             </footer>
