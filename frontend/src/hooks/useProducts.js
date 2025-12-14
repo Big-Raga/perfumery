@@ -16,6 +16,8 @@ const categoryMatchers = {
         /\bfresh\b|\bcitrus\b|\blight\b|\baqua\b/i.test(categoryName),
     oriental: (categoryName) =>
         /\boriental\b|\bspicy\b|\bwarm\b|\bexotic\b/i.test(categoryName),
+    featured: (categoryName, product) =>
+        product?.featured === true,
 };
 
 const useProducts = (category = 'all') => {
@@ -56,10 +58,6 @@ const useProducts = (category = 'all') => {
             return products;
         }
 
-        if (category === 'featured') {
-            return products.filter(product => product.featured === true);
-        }
-
         const matcher = categoryMatchers[category];
         if (!matcher) {
             // Fallback for unknown categories
@@ -72,7 +70,7 @@ const useProducts = (category = 'all') => {
 
         return products.filter(product => {
             const productCategory = product.category?.name?.toLowerCase() || '';
-            return matcher(productCategory);
+            return matcher(productCategory, product);
         });
     }, [products, category]);
 
