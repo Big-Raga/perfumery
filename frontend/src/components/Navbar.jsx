@@ -21,9 +21,7 @@ const Navbar = () => {
                 { name: 'Men\'s Collection', path: '/products/men' },
                 { name: 'Women\'s Collection', path: '/products/women' },
                 { name: 'Unisex Collection', path: '/products/unisex' },
-                { name: 'Luxury Collection', path: '/products/luxury' },
-                { name: 'Fresh & Citrus', path: '/products/fresh' },
-                { name: 'Oriental & Spicy', path: '/products/oriental' },
+                { name: 'Luxury Collection', path: '/products/luxury' },    
                 { name: 'Featured Products', path: '/products/featured' },
             ]
         },

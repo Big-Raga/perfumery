@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useFeaturedProducts } from "../hooks/productHooks";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import ProductCard from "../components/ProductCard";
 
 const UserHome = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -10,6 +12,19 @@ const UserHome = () => {
     const { data, isLoading, isError } = useFeaturedProducts();
 
     const featuredProducts = data;
+
+    const heroSlides = [
+        {
+            title: "Authentic Oud",
+            subtitle: "Discover our signature collection",
+            image: "/hero.jpg"
+        },
+        {
+            title: "Luxury Fragrances",
+            subtitle: "Experience elegance and sophistication",
+            image: "/background2.png"
+        }
+    ];
     // set slideshow
     useEffect(() => {
         setIsLoaded(true);
@@ -18,20 +33,6 @@ const UserHome = () => {
         }, 5000);
         return () => clearInterval(timer);
     }, []);
-
-    const heroSlides = [
-        {
-            title: "Authentic Oud",
-            subtitle: "Discover our signature collection",
-            image: "hero.jpg" // You can replace this with the actual path to your uploaded image
-        }
-        // Add more slides here later as needed
-        // {
-        //     title: "Another Collection",
-        //     subtitle: "Another subtitle",
-        //     image: "/path/to/another/image.jpg"
-        // }
-    ];
 
     // change later once backend established
 
@@ -201,97 +202,7 @@ const UserHome = () => {
                             </div>
                         ) : featuredProducts && featuredProducts.length > 0 ? (
                             featuredProducts.map((product, index) => (
-                                <motion.div
-                                    key={product._id || product.id || index}
-                                    variants={itemVariants}
-                                    whileHover={{ y: -8, scale: 1.01 }}
-                                    className="bg-white rounded-3xl shadow-xl overflow-hidden group cursor-pointer border border-gray-100 hover:shadow-2xl transition-all duration-500"
-                                >
-                                    <Link to={`/product/${product._id}`} className="block">
-                                        <div className="relative overflow-hidden">
-                                            <img
-                                                src={product.picture}
-                                                alt={product.title}
-                                                className="w-full h-48 sm:h-56 md:h-64 object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                                            />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-                                            {/* Wishlist Button */}
-                                            <motion.button
-                                                initial={{ scale: 0 }}
-                                                whileInView={{ scale: 1 }}
-                                                whileHover={{ scale: 1.1 }}
-                                                transition={{ delay: index * 0.1 }}
-                                                className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm p-2.5 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white"
-                                                onClick={(e) => e.preventDefault()}
-                                            >
-                                                <svg className="w-4 h-4 text-gray-600 hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                            </motion.button>
-
-                                            {/* Quick View Button */}
-                                            <motion.div
-                                                initial={{ opacity: 0, y: 20 }}
-                                                whileInView={{ opacity: 0, y: 20 }}
-                                                className="absolute bottom-4 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all duration-300"
-                                            >
-                                                <button
-                                                    className="bg-white/95 backdrop-blur-sm text-gray-800 px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:bg-white transition-all"
-                                                    onClick={(e) => e.preventDefault()}
-                                                >
-                                                    Quick View
-                                                </button>
-                                            </motion.div>
-                                        </div>
-
-                                        <div className="p-5 md:p-6">
-                                            {/* Product Title */}
-                                            <div className="mb-3">
-                                                <p className="text-xs text-gray-500 uppercase tracking-wide font-medium mb-1">House of Oud</p>
-                                                <h3 className="text-lg md:text-xl font-semibold text-gray-900 leading-tight">
-                                                    {product.title}
-                                                </h3>
-                                            </div>
-
-                                            {/* Product Details */}
-                                            <div className="mb-4">
-                                                <div className="flex items-center gap-1 mb-2">
-                                                    {/* Star Rating */}
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <svg
-                                                            key={i}
-                                                            className={`w-3.5 h-3.5 ${i < Math.floor(product.rating) ? 'text-amber-400' : 'text-gray-300'} fill-current`}
-                                                            viewBox="0 0 20 20"
-                                                        >
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                    ))}
-                                                    <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-                                                </div>
-                                                <p className="text-sm text-gray-600">
-                                                    {product.Type ? product.Type.name : 'Eau de Parfum'}
-                                                </p>
-                                            </div>
-
-                                            {/* Price and Action */}
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex flex-col">
-                                                    <span className="text-lg font-bold text-gray-900">${product.price}</span>
-                                                    <span className="text-xs text-gray-500">Free shipping</span>
-                                                </div>
-                                                <motion.button
-                                                    whileHover={{ scale: 1.02 }}
-                                                    whileTap={{ scale: 0.98 }}
-                                                    className="bg-amber-500 text-white px-4 md:px-5 py-2.5 rounded-xl text-sm font-medium shadow-lg hover:bg-gray-800 transition-all duration-300 hover:shadow-xl"
-                                                    onClick={(e) => e.preventDefault()}
-                                                >
-                                                    View Details
-                                                </motion.button>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                </motion.div>
+                                <ProductCard key={product._id || product.id || index} product={product} index={index} />
                             ))
                         ) : (
                             <div className="col-span-full text-center py-12">
@@ -354,7 +265,7 @@ const UserHome = () => {
             </section>
 
             {/* Newsletter */}
-            <section className="py-12 md:py-20 bg-gradient-to-r from-amber-600 to-yellow-600">
+            {/* <section className="py-12 md:py-20 bg-gradient-to-r from-amber-600 to-yellow-600">
                 <div className="container mx-auto px-4 md:px-6 text-center">
                     <motion.div
                         initial={{ y: 50, opacity: 0 }}
@@ -385,63 +296,12 @@ const UserHome = () => {
                         </div>
                     </motion.div>
                 </div>
-            </section>
+            </section> */}
 
-            {/* Footer */}
-            <footer className="bg-gray-900 text-white py-8 md:py-12">
-                <div className="container mx-auto px-4 md:px-6">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-                        <motion.div
-                            initial={{ y: 30, opacity: 0 }}
-                            whileInView={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.6 }}
-                            viewport={{ once: true }}
-                            className="sm:col-span-2 md:col-span-1"
-                        >
-                            <div className="flex items-center space-x-3 mb-4">
-                                <img src="/logo.svg" alt="House of Oud" className="h-6 md:h-8 w-6 md:w-8" />
-                                <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
-                                    House of Oud
-                                </span>
-                            </div>
-                            <p className="text-gray-400 text-sm md:text-base">
-                                Crafting exceptional fragrances since 2013. Your signature scent awaits.
-                            </p>
-                        </motion.div>
-
-                        {[
-                            { title: 'Collections', items: ['Men', 'Women', 'Unisex', 'Limited Edition'] },
-                            { title: 'Company', items: ['About Us', 'Our Story', 'Careers', 'Press'] },
-                            { title: 'Support', items: ['Contact', 'FAQ', 'Shipping', 'Returns'] }
-                        ].map((section, index) => (
-                            <motion.div
-                                key={section.title}
-                                initial={{ y: 30, opacity: 0 }}
-                                whileInView={{ y: 0, opacity: 1 }}
-                                transition={{ duration: 0.6, delay: index * 0.1 }}
-                                viewport={{ once: true }}
-                            >
-                                <h3 className="text-base md:text-lg font-semibold mb-3 md:mb-4">{section.title}</h3>
-                                <ul className="space-y-1.5 md:space-y-2">
-                                    {section.items.map((item) => (
-                                        <li key={item}>
-                                            <a href="#" className="text-gray-400 hover:text-amber-400 transition-colors text-sm md:text-base">
-                                                {item}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </motion.div>
-                        ))}
-                    </div>
-
-                    <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-400">
-                        <p className="text-sm md:text-base">&copy; 2024 House of Oud. All rights reserved.</p>
-                    </div>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 };
 
 export default UserHome;
+

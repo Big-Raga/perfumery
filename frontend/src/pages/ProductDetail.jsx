@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../api/productAPI';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -95,7 +97,8 @@ const ProductDetail = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <Navbar />
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24 md:pt-28">
                 <button
                     onClick={() => navigate(-1)}
                     className="mb-8 flex items-center text-gray-600 hover:text-gray-900 transition-colors"
@@ -148,7 +151,7 @@ const ProductDetail = () => {
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <span className="text-3xl font-bold text-gray-900">${product.price}</span>
+                            <span className="text-3xl font-bold text-gray-900">{product.price} Rs</span>
                             {product.originalPrice && (
                                 <span className="text-xl text-gray-500 line-through">${product.originalPrice}</span>
                             )}
@@ -202,13 +205,11 @@ const ProductDetail = () => {
                             )}
                         </div>
 
-                        <div className="flex space-x-4">
-                            <button className="flex-1 bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
-                                Add to Cart
+                        <div className="flex space-x-4">    
+                            <button className="bg-gray-900 text-white px-6 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors w-64">
+                               Order Now!
                             </button>
-                            <button className="px-6 py-3 border-2 border-gray-200 rounded-lg font-medium text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-all">
-                                ♡ Wishlist
-                            </button>
+
                         </div>
 
                         {product.inStock !== undefined && (
@@ -244,24 +245,7 @@ const ProductDetail = () => {
                             >
                                 Fragrance Notes
                             </button>
-                            <button
-                                className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'ingredients'
-                                    ? 'border-gray-900 text-gray-900'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                                    }`}
-                                onClick={() => setActiveTab('ingredients')}
-                            >
-                                Ingredients
-                            </button>
-                            <button
-                                className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'reviews'
-                                    ? 'border-gray-900 text-gray-900'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                                    }`}
-                                onClick={() => setActiveTab('reviews')}
-                            >
-                                Reviews
-                            </button>
+
                         </div>
                     </div>
 
@@ -324,71 +308,32 @@ const ProductDetail = () => {
                             <div className="space-y-8">
                                 <h3 className="text-2xl font-bold text-gray-900 mb-6">Fragrance Composition</h3>
 
-                                {product.notes ? (
+                                {product.notes && product.notes.length > 0 ? (
                                     <div className="space-y-6">
-                                        {/* Top Notes */}
-                                        {product.notes.top && product.notes.top.length > 0 && (
-                                            <div className="bg-pink-50 p-6 rounded-lg border border-pink-200">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center">
-                                                        <span className="text-2xl mr-3">🌸</span>
-                                                        <h4 className="text-xl font-semibold text-gray-900">Top Notes</h4>
-                                                    </div>
-                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">First 15 minutes</span>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {product.notes.top.map((note, index) => (
-                                                        <span key={index} className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                            {note}
-                                                        </span>
-                                                    ))}
-                                                </div>
+                                        <div>
+                                            <h4 className="text-lg font-semibold text-gray-900 mb-3">Fragrance Notes</h4>
+                                            <div className="space-y-3">
+                                                {product.notes.map((note, index) => {
+                                                    // Calculate width percentage based on position
+                                                    // First note: 100%, gradually decrease to last note
+                                                    const totalNotes = product.notes.length;
+                                                    const widthPercent = 100 - (index * (70 / totalNotes));
+                                                    
+                                                    return (
+                                                        <div key={index} className="flex flex-col gap-1">
+                                                            <div
+                                                                className="h-10 rounded-lg flex items-center px-4 transition-transform hover:scale-105 origin-left"
+                                                                style={{
+                                                                    backgroundColor: note.color || '#E0E0E0',
+                                                                    width: `${widthPercent}%`
+                                                                }}
+                                                            >
+                                                                <span className="text-gray-800 font-medium text-sm">{note.name}</span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
-                                        )}
-
-                                        {/* Middle Notes */}
-                                        {product.notes.middle && product.notes.middle.length > 0 && (
-                                            <div className="bg-rose-50 p-6 rounded-lg border border-rose-200">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center">
-                                                        <span className="text-2xl mr-3">🌹</span>
-                                                        <h4 className="text-xl font-semibold text-gray-900">Heart Notes</h4>
-                                                    </div>
-                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">15 minutes - 2 hours</span>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {product.notes.middle.map((note, index) => (
-                                                        <span key={index} className="bg-rose-100 text-rose-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                            {note}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* Base Notes */}
-                                        {product.notes.base && product.notes.base.length > 0 && (
-                                            <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
-                                                <div className="flex items-center justify-between mb-4">
-                                                    <div className="flex items-center">
-                                                        <span className="text-2xl mr-3">🌰</span>
-                                                        <h4 className="text-xl font-semibold text-gray-900">Base Notes</h4>
-                                                    </div>
-                                                    <span className="text-sm text-gray-600 bg-white px-3 py-1 rounded-full">2+ hours</span>
-                                                </div>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {product.notes.base.map((note, index) => (
-                                                        <span key={index} className="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                            {note}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <div className="bg-gray-50 p-6 rounded-lg">
-                                            <h4 className="text-xl font-semibold text-gray-900 mb-3">The Scent Journey</h4>
-                                            <p className="text-gray-600">Experience how this fragrance evolves throughout the day, from the initial bright burst to the deep, lasting base notes that linger on your skin.</p>
                                         </div>
                                     </div>
                                 ) : (
@@ -400,123 +345,11 @@ const ProductDetail = () => {
                             </div>
                         )}
 
-                        {/* Ingredients Tab */}
-                        {activeTab === 'ingredients' && (
-                            <div className="space-y-8">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Premium Ingredients</h3>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Natural Extracts</h4>
-                                        <p className="text-gray-600 mb-4 text-sm">Our fragrances feature carefully selected natural extracts sourced from the finest suppliers worldwide.</p>
-                                        <ul className="space-y-2 text-sm text-gray-600">
-                                            <li className="flex items-center">
-                                                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                                                Bulgarian Rose Oil
-                                            </li>
-                                            <li className="flex items-center">
-                                                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                                                Indian Sandalwood
-                                            </li>
-                                            <li className="flex items-center">
-                                                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                                                Cambodian Oudh
-                                            </li>
-                                            <li className="flex items-center">
-                                                <div className="w-2 h-2 bg-blue-400 rounded-full mr-2"></div>
-                                                Italian Bergamot
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Sustainable Sourcing</h4>
-                                        <p className="text-gray-600 text-sm">We are committed to ethical and sustainable sourcing practices, supporting local communities and preserving natural habitats.</p>
-                                    </div>
-
-                                    <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
-                                        <h4 className="text-lg font-semibold text-gray-900 mb-3">Quality Assurance</h4>
-                                        <p className="text-gray-600 text-sm">Every ingredient undergoes rigorous quality testing to ensure the highest standards of purity and excellence.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Reviews Tab */}
-                        {activeTab === 'reviews' && (
-                            <div className="space-y-8">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h3>
-
-                                <div className="bg-gray-50 p-6 rounded-lg">
-                                    <div className="text-center">
-                                        <div className="text-4xl font-bold text-gray-900 mb-2">{product.rating || 4.8}</div>
-                                        <div className="flex justify-center items-center mb-2">
-                                            {renderStars(product.rating || 4.8)}
-                                        </div>
-                                        <p className="text-gray-600">Based on 127 reviews</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-6">
-                                    <div className="border border-gray-200 rounded-lg p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <div className="flex items-center space-x-2 mb-1">
-                                                    <strong className="text-gray-900">Sarah M.</strong>
-                                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Verified Purchase</span>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    {renderStars(5)}
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500 text-sm">2 weeks ago</span>
-                                        </div>
-                                        <p className="text-gray-600">"Absolutely love this fragrance! The scent is sophisticated and lasts all day. Perfect for special occasions."</p>
-                                    </div>
-
-                                    <div className="border border-gray-200 rounded-lg p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <div className="flex items-center space-x-2 mb-1">
-                                                    <strong className="text-gray-900">Michael R.</strong>
-                                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Verified Purchase</span>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    {renderStars(4)}
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500 text-sm">1 month ago</span>
-                                        </div>
-                                        <p className="text-gray-600">"Great fragrance with excellent longevity. The oudh notes are prominent without being overwhelming."</p>
-                                    </div>
-
-                                    <div className="border border-gray-200 rounded-lg p-6">
-                                        <div className="flex justify-between items-start mb-4">
-                                            <div>
-                                                <div className="flex items-center space-x-2 mb-1">
-                                                    <strong className="text-gray-900">Emma L.</strong>
-                                                    <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Verified Purchase</span>
-                                                </div>
-                                                <div className="flex items-center">
-                                                    {renderStars(5)}
-                                                </div>
-                                            </div>
-                                            <span className="text-gray-500 text-sm">3 weeks ago</span>
-                                        </div>
-                                        <p className="text-gray-600">"This has become my signature scent. The quality is exceptional and the packaging is beautiful."</p>
-                                    </div>
-                                </div>
-
-                                <div className="text-center">
-                                    <button className="bg-gray-900 text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors">
-                                        Load More Reviews
-                                    </button>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 };

@@ -6,6 +6,7 @@ const LoginAdmin = async (req, res) => {
     const { email } = req.body;
     try {
         const existingAdmin = await admin.findOne({ email });
+        console.log(existingAdmin);
         if (!existingAdmin) {
             return res.status(404).json({ data: null, message: "Admin not found" });
         }

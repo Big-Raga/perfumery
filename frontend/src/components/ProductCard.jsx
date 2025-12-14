@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useStarRating from '../hooks/useStarRating.jsx';
 
 const ProductCard = ({ product, index = 0 }) => {
     const { renderStars } = useStarRating();
+    const navigate = useNavigate();
 
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
@@ -15,13 +16,17 @@ const ProductCard = ({ product, index = 0 }) => {
         }
     };
 
+    const handleViewDetails = () => {
+        navigate(`/product/${product._id}`);
+    };
+
     return (
         <motion.div
             variants={itemVariants}
             whileHover={{ y: -8, scale: 1.02 }}
             className="bg-white rounded-2xl shadow-lg overflow-hidden group cursor-pointer"
         >
-            <Link to={`/product/${product._id}`}>
+            <div>
                 <div className="relative overflow-hidden">
                     <img
                         src={product.picture}
@@ -76,17 +81,17 @@ const ProductCard = ({ product, index = 0 }) => {
                     {/* Price and Action */}
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-gray-900">
-                            ${product.price}
+                            {product.price} Rs
                         </span>
                         <button
                             className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors"
-                            onClick={(e) => e.preventDefault()}
+                            onClick={handleViewDetails}
                         >
                             View Details
                         </button>
                     </div>
                 </div>
-            </Link>
+            </div>
         </motion.div>
     );
 };

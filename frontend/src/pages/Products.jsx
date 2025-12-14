@@ -7,6 +7,7 @@ import LoadingSkeleton from '../components/LoadingSkeleton';
 import { ErrorState, EmptyState } from '../components/StateComponents';
 import useProducts from '../hooks/useProducts';
 import useCategoryTitle from '../hooks/useCategoryTitle';
+import Footer from '../components/Footer';
 
 const Products = () => {
     const { category = 'all' } = useParams();
@@ -83,6 +84,9 @@ const Products = () => {
                         </>
                     )}
                 </div>
+            </div>
+            <div className="mt-16 md:mt-20"> 
+                <Footer />      
             </div>
         </div>
     );

@@ -24,6 +24,8 @@ const getFeaturedProducts = async (req, res) => {
 const getProductByCategory = async (req, res) => {
     const { categoryId } = req.params;
     try {
+        console.log(`Fetching products for category ID: ${categoryId}`);
+        console.log(`all categories in DB:` + await Category.find({}));
         const products = await Product.find({ category: categoryId }).select("_id title picture price category rating").populate("category");
         res.json(products);
     }
