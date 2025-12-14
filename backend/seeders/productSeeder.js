@@ -11,7 +11,7 @@ const seedProducts = async () => {
 
     // Get the base URL from environment or use default
     // const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-    const BASE_URL = process.env.BASE_URL || 'https://www.houseofouds.com';
+    const BASE_URL = process.env.VITE_BACKEND_URL;
 
     
     const STATIC_PATH = '/static';

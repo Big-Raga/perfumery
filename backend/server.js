@@ -10,7 +10,10 @@ const app = express();
 connectDB();
 
 // serve images
-app.use('/static', express.static('images'));
+app.use(
+  '/static',
+  express.static(path.join(__dirname, 'images'))
+);
 
 
 
