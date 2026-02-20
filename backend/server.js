@@ -35,6 +35,10 @@ app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/images', require('./routes/imageRoutes'));
 
+// Health check route
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
 
 // 404 handler
 app.use((req, res, next) => {
