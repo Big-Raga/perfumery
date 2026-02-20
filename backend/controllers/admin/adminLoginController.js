@@ -40,26 +40,36 @@ const sendOTP = async (email) => {
         throw new Error('Email service not configured');
     }
 
+    console.log('Creating transporter with email:', process.env.EMAIL_USER);
+
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
-        }
+        },
+        connectionTimeout: 5000,
+        socketTimeout: 5000
     });
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: 'Your OTP Code',
-        text: `Your OTP code is ${otp}. It is valid for 5 minutes.`
+        text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+        html: `<h2>Your OTP Code</h2><p>Your OTP code is <strong>${otp}</strong></p><p>It is valid for 5 minutes.</p>`
     };
 
     try {
+        console.log('Attempting to send email...');
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response);
+        await transporter.close();
     } catch (error) {
-        console.error('Error sending email:', error);
+        console.error('Error sending email:', error.message);
+        console.error('Error code:', error.code);
         throw error;
     }
 
