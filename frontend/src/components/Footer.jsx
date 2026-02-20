@@ -17,8 +17,8 @@ const Footer = () => {
     ];
 
     const supportLinks = [
-        { name: 'Contact', path: '#' },
-        { name: 'FAQ', path: '#' },
+        { name: 'Contact', path: '/contact' },
+        { name: 'FAQ', path: '/contact' },
     ];
 
     return (

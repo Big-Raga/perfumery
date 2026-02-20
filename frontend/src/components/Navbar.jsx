@@ -25,6 +25,7 @@ const Navbar = () => {
                 { name: 'Featured Products', path: '/products/featured' },
             ]
         },
+        { name: 'Contact', path: '/contact', hasDropdown: false },
     ];
 
     const isActive = (path) => {
