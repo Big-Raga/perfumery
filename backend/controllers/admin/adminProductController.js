@@ -104,6 +104,10 @@ const updateProduct = async (req, res) => {
         const { id } = req.params;
         const updateData = req.body;
 
+        // Remove empty string fields that are ObjectId refs
+        if (updateData.category === '') delete updateData.category;
+        if (updateData.Type === '') delete updateData.Type;
+
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
             updateData,
@@ -122,9 +126,10 @@ const updateProduct = async (req, res) => {
             message: "Product updated successfully"
         });
     } catch (error) {
+        console.error('Update product error:', error);
         res.status(500).json({
             data: null,
-            message: "Server error"
+            message: error.message || "Server error"
         });
     }
 };

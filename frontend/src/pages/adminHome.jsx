@@ -5,6 +5,7 @@ const AdminHome = () => {
     const [activeTab, setActiveTab] = useState('products');
     const [showModal, setShowModal] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+    const [toast, setToast] = useState(null);
 
     const logoutMutation = useAdminLogout();
     const { data: products, isLoading: productsLoading } = useAdminProducts();
@@ -31,8 +32,16 @@ const AdminHome = () => {
 
     const handleDeleteProduct = (id) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
-            deleteProductMutation.mutate(id);
+            deleteProductMutation.mutate(id, {
+                onSuccess: () => showToast('Product deleted successfully', 'success'),
+                onError: (err) => showToast(err.response?.data?.message || 'Failed to delete product', 'error')
+            });
         }
+    };
+
+    const showToast = (message, type = 'success') => {
+        setToast({ message, type });
+        setTimeout(() => setToast(null), 3000);
     };
 
     return (
@@ -198,10 +207,22 @@ const AdminHome = () => {
                     product={editingProduct}
                     categories={categories}
                     types={types}
-                    onClose={() => setShowModal(false)}
+                    onClose={(message) => {
+                        setShowModal(false);
+                        if (message) showToast(message, 'success');
+                    }}
                     createMutation={createProductMutation}
                     updateMutation={updateProductMutation}
                 />
+            )}
+
+            {/* Toast Notification */}
+            {toast && (
+                <div className={`fixed bottom-6 right-6 z-50 px-6 py-3 rounded-lg shadow-lg text-white text-sm font-medium transition-all ${
+                    toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'
+                }`}>
+                    {toast.message}
+                </div>
             )}
         </div>
     );
@@ -279,13 +300,25 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
             stock: parseInt(formData.stock)
         };
 
+        // Remove empty optional ObjectId fields to avoid MongoDB CastError
+        if (!submitData.category) delete submitData.category;
+        if (!submitData.Type) delete submitData.Type;
+        // Remove empty notes
+        if (!submitData.notes) delete submitData.notes;
+
         if (product) {
             updateMutation.mutate({ id: product._id, productData: submitData }, {
-                onSuccess: () => onClose()
+                onSuccess: () => onClose('Product updated successfully'),
+                onError: (err) => {
+                    alert(err.response?.data?.message || 'Failed to update product');
+                }
             });
         } else {
             createMutation.mutate(submitData, {
-                onSuccess: () => onClose()
+                onSuccess: () => onClose('Product created successfully'),
+                onError: (err) => {
+                    alert(err.response?.data?.message || 'Failed to create product');
+                }
             });
         }
     };
