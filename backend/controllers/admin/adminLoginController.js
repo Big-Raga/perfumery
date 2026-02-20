@@ -44,14 +44,14 @@ const sendOTP = async (email) => {
 
     const transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
+        port: 465,
+        secure: true,
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
         },
-        connectionTimeout: 5000,
-        socketTimeout: 5000
+        connectionTimeout: 10000,
+        socketTimeout: 10000
     });
 
     const mailOptions = {
@@ -63,7 +63,7 @@ const sendOTP = async (email) => {
     };
 
     try {
-        console.log('Attempting to send email...');
+        console.log('Attempting to send email via port 465...');
         const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response);
         await transporter.close();
