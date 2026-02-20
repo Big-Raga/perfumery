@@ -1,6 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const { LoginAdmin, verifyOTP, LogoutAdmin } = require("../controllers/admin/adminLoginController");
+const AuthMiddleware = require("../middleware/authMiddleware");
 const {
     getAllProductsAdmin,
     getProductByIdAdmin,
@@ -12,23 +13,23 @@ const {
     createType
 } = require("../controllers/admin/adminProductController");
 
-// Authentication routes
+// Authentication routes (no middleware needed)
 Router.post("/login-admin", LoginAdmin);
 Router.post("/verify-otp", verifyOTP);
 Router.post("/logout", LogoutAdmin);
 
-// Product management routes
-Router.get("/products", getAllProductsAdmin);
-Router.get("/products/:id", getProductByIdAdmin);
-Router.post("/products", createProduct);
-Router.put("/products/:id", updateProduct);
-Router.delete("/products/:id", deleteProduct);
+// Protected product management routes
+Router.get("/products", AuthMiddleware, getAllProductsAdmin);
+Router.get("/products/:id", AuthMiddleware, getProductByIdAdmin);
+Router.post("/products", AuthMiddleware, createProduct);
+Router.put("/products/:id", AuthMiddleware, updateProduct);
+Router.delete("/products/:id", AuthMiddleware, deleteProduct);
 
-// Categories route
-Router.get("/categories", getAllCategories);
+// Protected categories route
+Router.get("/categories", AuthMiddleware, getAllCategories);
 
-// Types routes
-Router.get("/types", getAllTypes);
-Router.post("/types", createType);
+// Protected types routes
+Router.get("/types", AuthMiddleware, getAllTypes);
+Router.post("/types", AuthMiddleware, createType);
 
 module.exports = Router;

@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 
 const AuthMiddleware = (req, res, next) => {
-    const { token } = req.headers;
+    const token = req.cookies?.jwt || req.headers.authorization?.split(' ')[1];
 
     if (!token) {
-        return res.status(401).json({ data: null, message: "No token provided" });
+        return res.status(401).json({ data: null, message: "Unauthorized - No token provided" });
     }
 
     try {
@@ -12,7 +12,7 @@ const AuthMiddleware = (req, res, next) => {
         req.user = decoded;
         next();
     } catch (error) {
-        return res.status(401).json({ data: null, message: "Invalid token" });
+        return res.status(401).json({ data: null, message: "Unauthorized - Invalid token" });
     }
 };
 
