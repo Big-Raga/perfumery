@@ -14,7 +14,7 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
             <Navbar />
             <div className="pt-24 md:pt-28 pb-16">
                 {/* Hero Section */}
