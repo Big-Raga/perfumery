@@ -7,11 +7,14 @@ import Products from "./pages/Products"
 import SearchResults from "./pages/SearchResults"
 import ContactUs from "./pages/ContactUs"
 import ProtectedRoute from "./components/ProtectedRoute"
+import ScrollToTop from "./components/ScrollToTop"
 
 
 const App = () => {
     return (
-        <Routes>
+        <>
+            <ScrollToTop />
+            <Routes>
             <Route path="/" element={<UserHome />} />
             <Route path="/product/:productId" element={<ProductDetail />} />
             <Route path="/products" element={<Products />} />
@@ -25,6 +28,7 @@ const App = () => {
                 </ProtectedRoute>
             } />
         </Routes>
+        </>
     )
 }
 
