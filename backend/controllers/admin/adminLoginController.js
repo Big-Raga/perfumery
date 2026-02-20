@@ -1,22 +1,21 @@
 const admin = require("../../models/admin");
-const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 
 const LoginAdmin = async (req, res) => {
     const { email } = req.body;
     try {
         const existingAdmin = await admin.findOne({ email });
-        console.log(existingAdmin);
         if (!existingAdmin) {
             return res.status(404).json({ data: null, message: "Admin not found" });
         }
 
-        const otp = sendOTP(email);
+        const otp = generateOTP();
+        console.log(`\n✅ OTP for ${email}: ${otp}\n`);
 
         existingAdmin.currentOTP = otp;
         existingAdmin.otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes from now
 
-        await existingAdmin.save(); // save the admin
+        await existingAdmin.save();
 
         res.status(200).json({ data: null, message: "OTP sent successfully" });
 
@@ -28,44 +27,6 @@ const LoginAdmin = async (req, res) => {
 
 const generateOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
-}
-
-const sendOTP = (email) => {
-    const otp = generateOTP();
-    console.log(`\n✅ OTP GENERATED: ${otp}\n`);
-    console.log(`Sending OTP to ${email}`);
-
-    try {
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Your OTP Code',
-            text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
-            html: `<h2>Your OTP Code</h2><p>Your OTP code is <strong>${otp}</strong></p><p>It is valid for 5 minutes.</p>`
-        };
-
-        // Fire and forget - don't await
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log('⚠️ Email sending in background failed:', error.message);
-            } else {
-                console.log('✅ Email sent successfully');
-            }
-        });
-    } catch (error) {
-        // Silently catch any transporter errors, don't block OTP generation
-        console.log('ℹ️ Email service note:', error.message);
-    }
-
-    return otp;
 }
 
 const generateToken = async (admin) => {
@@ -102,7 +63,7 @@ const verifyOTP = async (req, res) => {
         res.cookie('jwt', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
             maxAge: 3600000 // 1 hour
         });
 
@@ -122,7 +83,7 @@ const LogoutAdmin = async (req, res) => {
         res.clearCookie('jwt', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict'
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax'
         });
 
         return res.status(200).json({

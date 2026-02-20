@@ -4,8 +4,28 @@ const API_BASE_URL = `${import.meta.env.VITE_BASE_URL}/api`;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // This ensures cookies are sent with requests
+  withCredentials: true,
 });
+
+// Attach token from localStorage as Authorization header (fallback for cross-origin cookie issues)
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// On 401, clear stored token
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('adminToken');
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Admin Authentication APIs
 export const adminAuthAPI = {

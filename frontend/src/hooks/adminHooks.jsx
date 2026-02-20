@@ -31,10 +31,18 @@ export const useAdminLogin = () => {
 // Hook for verifying OTP and logging in
 export const useAdminOTPVerify = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: ({ email, otp }) => adminAuthAPI.verifyOTP(email, otp),
         onSuccess: (data) => {
+            // Store token in localStorage for cross-origin auth
+            const token = data.data?.data?.token;
+            if (token) {
+                localStorage.setItem('adminToken', token);
+            }
+            // Invalidate auth cache so ProtectedRoute re-checks
+            queryClient.invalidateQueries({ queryKey: ['admin-auth'] });
             navigate('/admin/dashboard');
         },
         onError: (error) => {
@@ -46,16 +54,18 @@ export const useAdminOTPVerify = () => {
 // Hook for admin logout
 export const useAdminLogout = () => {
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: () => adminAuthAPI.logout(),
-        onSuccess: (data) => {
-            console.log('Logged out successfully');
+        onSuccess: () => {
+            localStorage.removeItem('adminToken');
+            queryClient.clear();
             navigate('/admin/login');
         },
-        onError: (error) => {
-            console.error('Logout failed:', error.response?.data?.message);
-            // Even if logout fails, redirect to login
+        onError: () => {
+            localStorage.removeItem('adminToken');
+            queryClient.clear();
             navigate('/admin/login');
         }
     });
