@@ -21,7 +21,8 @@ const LoginAdmin = async (req, res) => {
         res.status(200).json({ data: null, message: "OTP sent successfully" });
 
     } catch (error) {
-        res.status(500).json({ data: null, message: "Server error" });
+        console.error('Error in LoginAdmin:', error);
+        res.status(500).json({ data: null, message: error.message || "Server error" });
     }
 };
 
@@ -32,6 +33,12 @@ const generateOTP = () => {
 const sendOTP = async (email) => {
     const otp = generateOTP();
     console.log(`Sending OTP to ${email}`);
+
+    // Validate environment variables
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        console.error('Email credentials not configured. EMAIL_USER or EMAIL_PASS missing');
+        throw new Error('Email service not configured');
+    }
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -48,12 +55,13 @@ const sendOTP = async (email) => {
         text: `Your OTP code is ${otp}. It is valid for 5 minutes.`
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            return console.log('Error sending email:', error);
-        }
+    try {
+        const info = await transporter.sendMail(mailOptions);
         console.log('Email sent successfully:', info.response);
-    });
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw error;
+    }
 
     return otp;
 }
