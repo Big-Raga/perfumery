@@ -216,11 +216,7 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
         price: product?.price || '',
         category: product?.category?._id || '',
         Type: product?.Type?._id || '',
-        notes: {
-            top: product?.notes?.top || [],
-            middle: product?.notes?.middle || [],
-            base: product?.notes?.base || []
-        },
+        notes: product?.notes?.map(n => n.name).join(', ') || '',
         stock: product?.stock || '',
         featured: product?.featured || false
     });
@@ -246,11 +242,11 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
 
         setUploadingImage(true);
         try {
-            const formData = new FormData();
-            formData.append('image', selectedFile);
-            formData.append('title', formData.title || 'product');
+            const uploadData = new FormData();
+            uploadData.append('image', selectedFile);
+            uploadData.append('title', formData.title || 'product');
 
-            const response = await uploadImageMutation.mutateAsync(formData);
+            const response = await uploadImageMutation.mutateAsync(uploadData);
             return response.data.data.imageUrl;
         } catch (error) {
             console.error('Image upload failed:', error);
@@ -299,17 +295,6 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
         setFormData(prev => ({
             ...prev,
             [name]: type === 'checkbox' ? checked : value
-        }));
-    };
-
-    const handleNotesChange = (noteType, value) => {
-        const notesArray = value.split(',').map(note => note.trim()).filter(note => note);
-        setFormData(prev => ({
-            ...prev,
-            notes: {
-                ...prev.notes,
-                [noteType]: notesArray
-            }
         }));
     };
 
@@ -445,41 +430,17 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
                         </div>
 
                         {/* Fragrance Notes Section */}
-                        <div className="space-y-3">
-                            <h4 className="text-sm font-medium text-gray-700">Fragrance Notes</h4>
-
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600">Top Notes</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter notes separated by commas (e.g., Bergamot, Lemon, Orange)"
-                                    value={formData.notes.top.join(', ')}
-                                    onChange={(e) => handleNotesChange('top', e.target.value)}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600">Middle Notes</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter notes separated by commas (e.g., Rose, Jasmine, Geranium)"
-                                    value={formData.notes.middle.join(', ')}
-                                    onChange={(e) => handleNotesChange('middle', e.target.value)}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600">Base Notes</label>
-                                <input
-                                    type="text"
-                                    placeholder="Enter notes separated by commas (e.g., Sandalwood, Vanilla, Musk)"
-                                    value={formData.notes.base.join(', ')}
-                                    onChange={(e) => handleNotesChange('base', e.target.value)}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                                />
-                            </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Fragrance Notes</label>
+                            <input
+                                type="text"
+                                name="notes"
+                                placeholder="Enter notes separated by commas (e.g., vanilla, woody, citrus, fresh)"
+                                value={formData.notes}
+                                onChange={handleChange}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                            />
+                            <p className="text-xs text-gray-500 mt-1">Colors are auto-assigned based on note names</p>
                         </div>
 
                         <div className="flex items-center">

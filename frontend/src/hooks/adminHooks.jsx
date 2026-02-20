@@ -2,6 +2,19 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { adminAuthAPI, adminProductAPI, imageAPI } from "../api/adminAPI";
 import { useNavigate } from "react-router-dom";
 
+// Hook for verifying admin auth status
+export const useVerifyAuth = () => {
+    return useQuery({
+        queryKey: ['admin-auth'],
+        queryFn: async () => {
+            const response = await adminAuthAPI.verifyAuth();
+            return response.data.data;
+        },
+        retry: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+};
+
 // Hook for sending OTP to admin email
 export const useAdminLogin = () => {
     return useMutation({

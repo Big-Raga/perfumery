@@ -12,17 +12,23 @@ const {
     getAllTypes,
     createType
 } = require("../controllers/admin/adminProductController");
+const parseNotes = require("../middleware/parseNotes");
 
 // Authentication routes (no middleware needed)
 Router.post("/login-admin", LoginAdmin);
 Router.post("/verify-otp", verifyOTP);
 Router.post("/logout", LogoutAdmin);
 
+// Verify auth status
+Router.get("/verify", AuthMiddleware, (req, res) => {
+    res.status(200).json({ data: { user: req.user }, message: "Authenticated" });
+});
+
 // Protected product management routes
 Router.get("/products", AuthMiddleware, getAllProductsAdmin);
 Router.get("/products/:id", AuthMiddleware, getProductByIdAdmin);
-Router.post("/products", AuthMiddleware, createProduct);
-Router.put("/products/:id", AuthMiddleware, updateProduct);
+Router.post("/products", AuthMiddleware, parseNotes, createProduct);
+Router.put("/products/:id", AuthMiddleware, parseNotes, updateProduct);
 Router.delete("/products/:id", AuthMiddleware, deleteProduct);
 
 // Protected categories route

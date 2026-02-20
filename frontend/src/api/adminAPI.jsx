@@ -12,6 +12,7 @@ export const adminAuthAPI = {
   login: (email) => api.post("/admin/login-admin", { email }),
   verifyOTP: (email, otp) => api.post("/admin/verify-otp", { email, otp }),
   logout: () => api.post("/admin/logout"),
+  verifyAuth: () => api.get("/admin/verify"),
 };
 
 // Admin Product Management APIs

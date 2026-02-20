@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const connectDB = require('./config/database');
 
@@ -25,6 +26,7 @@ app.use(cors({
 
   credentials: true // Allow cookies to be sent
 }));
+app.use(cookieParser());
 app.use(express.json());
 
 //server port
