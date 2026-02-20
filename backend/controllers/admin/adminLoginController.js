@@ -35,30 +35,35 @@ const sendOTP = (email) => {
     console.log(`\n✅ OTP GENERATED: ${otp}\n`);
     console.log(`Sending OTP to ${email}`);
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
+    try {
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS
+            }
+        });
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Your OTP Code',
-        text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
-        html: `<h2>Your OTP Code</h2><p>Your OTP code is <strong>${otp}</strong></p><p>It is valid for 5 minutes.</p>`
-    };
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Your OTP Code',
+            text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
+            html: `<h2>Your OTP Code</h2><p>Your OTP code is <strong>${otp}</strong></p><p>It is valid for 5 minutes.</p>`
+        };
 
-    // Fire and forget - don't await
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.log('⚠️ Email sending in background failed:', error.message);
-        } else {
-            console.log('✅ Email sent successfully:', info.response);
-        }
-    });
+        // Fire and forget - don't await
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log('⚠️ Email sending in background failed:', error.message);
+            } else {
+                console.log('✅ Email sent successfully');
+            }
+        });
+    } catch (error) {
+        // Silently catch any transporter errors, don't block OTP generation
+        console.log('ℹ️ Email service note:', error.message);
+    }
 
     return otp;
 }
