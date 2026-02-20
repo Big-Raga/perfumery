@@ -11,7 +11,7 @@ const LoginAdmin = async (req, res) => {
             return res.status(404).json({ data: null, message: "Admin not found" });
         }
 
-        const otp = await sendOTP(email);
+        const otp = sendOTP(email);
 
         existingAdmin.currentOTP = otp;
         existingAdmin.otpExpiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes from now
@@ -30,28 +30,17 @@ const generateOTP = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-const sendOTP = async (email) => {
+const sendOTP = (email) => {
     const otp = generateOTP();
+    console.log(`\n✅ OTP GENERATED: ${otp}\n`);
     console.log(`Sending OTP to ${email}`);
 
-    // Validate environment variables
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-        console.error('Email credentials not configured. EMAIL_USER or EMAIL_PASS missing');
-        throw new Error('Email service not configured');
-    }
-
-    console.log('Creating transporter with email:', process.env.EMAIL_USER);
-
     const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
             pass: process.env.EMAIL_PASS
-        },
-        connectionTimeout: 10000,
-        socketTimeout: 10000
+        }
     });
 
     const mailOptions = {
@@ -62,16 +51,14 @@ const sendOTP = async (email) => {
         html: `<h2>Your OTP Code</h2><p>Your OTP code is <strong>${otp}</strong></p><p>It is valid for 5 minutes.</p>`
     };
 
-    try {
-        console.log('Attempting to send email via port 465...');
-        const info = await transporter.sendMail(mailOptions);
-        console.log('Email sent successfully:', info.response);
-        await transporter.close();
-    } catch (error) {
-        console.error('Error sending email:', error.message);
-        console.error('Error code:', error.code);
-        throw error;
-    }
+    // Fire and forget - don't await
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.log('⚠️ Email sending in background failed:', error.message);
+        } else {
+            console.log('✅ Email sent successfully:', info.response);
+        }
+    });
 
     return otp;
 }
