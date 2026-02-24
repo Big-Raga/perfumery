@@ -5,6 +5,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const connectDB = require('./config/database');
+const loggingMiddleware = require('./middleware/loggingMiddleware');
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(
 
 
 // Middleware
+app.use(loggingMiddleware);
 app.use(cors({
   // origin: process.env.FRONTEND_URL || 'https://http://localhost:5173', // Your frontend URL from
   origin: process.env.FRONTEND_URL || 'https://www.houseofouds.com', // Your frontend URL from env
