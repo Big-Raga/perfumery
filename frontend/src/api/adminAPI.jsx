@@ -57,6 +57,14 @@ export const imageAPI = {
   deleteImage: (filename) => api.delete(`/images/${filename}`),
 };
 
+// Admin Review Management APIs
+export const adminReviewAPI = {
+  getAllReviews: (status) => api.get('/admin/reviews', { params: status ? { status } : {} }),
+  approveReview: (reviewId) => api.patch(`/admin/reviews/${reviewId}/approve`),
+  rejectReview: (reviewId) => api.patch(`/admin/reviews/${reviewId}/reject`),
+  deleteReview: (reviewId) => api.delete(`/admin/reviews/${reviewId}`),
+};
+
 export default api;
 
 

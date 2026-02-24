@@ -38,6 +38,7 @@ const PORT = process.env.PORT || 3000;
 app.use('/api/admin', require('./routes/adminRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/images', require('./routes/imageRoutes'));
+app.use('/api/products', require('./routes/reviewRoutes'));
 
 // Health check route
 app.get('/health', (req, res) => {

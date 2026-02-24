@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useAdminLogout, useAdminProducts, useAdminCategories, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage } from '../hooks/adminHooks';
+import { useAdminLogout, useAdminProducts, useAdminCategories, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useAdminReviews, useApproveReview, useRejectReview, useDeleteReview } from '../hooks/adminHooks';
 
 const AdminHome = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -15,6 +15,13 @@ const AdminHome = () => {
     const createProductMutation = useCreateProduct();
     const updateProductMutation = useUpdateProduct();
     const deleteProductMutation = useDeleteProduct();
+
+    // Reviews
+    const [reviewStatusFilter, setReviewStatusFilter] = useState('pending');
+    const { data: reviews, isLoading: reviewsLoading, refetch: refetchReviews } = useAdminReviews(reviewStatusFilter);
+    const approveReviewMutation = useApproveReview();
+    const rejectReviewMutation = useRejectReview();
+    const deleteReviewMutation = useDeleteReview();
 
     const handleLogout = () => {
         logoutMutation.mutate();
@@ -35,6 +42,29 @@ const AdminHome = () => {
             deleteProductMutation.mutate(id, {
                 onSuccess: () => showToast('Product deleted successfully', 'success'),
                 onError: (err) => showToast(err.response?.data?.message || 'Failed to delete product', 'error')
+            });
+        }
+    };
+
+    const handleApproveReview = (id) => {
+        approveReviewMutation.mutate(id, {
+            onSuccess: () => showToast('Review approved', 'success'),
+            onError: () => showToast('Failed to approve review', 'error'),
+        });
+    };
+
+    const handleRejectReview = (id) => {
+        rejectReviewMutation.mutate(id, {
+            onSuccess: () => showToast('Review rejected', 'success'),
+            onError: () => showToast('Failed to reject review', 'error'),
+        });
+    };
+
+    const handleDeleteReview = (id) => {
+        if (window.confirm('Permanently delete this review?')) {
+            deleteReviewMutation.mutate(id, {
+                onSuccess: () => showToast('Review deleted', 'success'),
+                onError: () => showToast('Failed to delete review', 'error'),
             });
         }
     };
@@ -86,6 +116,15 @@ const AdminHome = () => {
                                 }`}
                         >
                             Analytics
+                        </button>
+                        <button
+                            onClick={() => setActiveTab('reviews')}
+                            className={`py-2 px-1 border-b-2 font-medium text-sm ${activeTab === 'reviews'
+                                ? 'border-indigo-500 text-indigo-600'
+                                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                                }`}
+                        >
+                            Reviews
                         </button>
                     </nav>
                 </div>
@@ -196,6 +235,106 @@ const AdminHome = () => {
                                 <h3 className="text-sm font-medium text-blue-600">Categories</h3>
                                 <p className="text-2xl font-bold text-blue-900">{categories?.length || 0}</p>
                             </div>
+                        </div>
+                    </div>
+                )}
+
+                {activeTab === 'reviews' && (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <h2 className="text-lg font-semibold text-gray-900">Review Moderation</h2>
+                            <div className="flex gap-2">
+                                {['pending', 'approved', 'rejected', ''].map((s) => (
+                                    <button
+                                        key={s}
+                                        onClick={() => setReviewStatusFilter(s)}
+                                        className={`px-3 py-1.5 rounded-md text-xs font-medium border transition-colors ${
+                                            reviewStatusFilter === s
+                                                ? 'bg-indigo-600 text-white border-indigo-600'
+                                                : 'bg-white text-gray-600 border-gray-300 hover:border-indigo-400'
+                                        }`}
+                                    >
+                                        {s === '' ? 'All' : s.charAt(0).toUpperCase() + s.slice(1)}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+                            {reviewsLoading ? (
+                                <div className="p-8 text-center">
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+                                    <p className="mt-2 text-gray-500">Loading reviews...</p>
+                                </div>
+                            ) : !reviews || reviews.length === 0 ? (
+                                <div className="p-8 text-center text-gray-500">
+                                    No reviews found{reviewStatusFilter ? ` with status "${reviewStatusFilter}"` : ''}.
+                                </div>
+                            ) : (
+                                <div className="divide-y divide-gray-100">
+                                    {reviews.map((review) => (
+                                        <div key={review._id} className="p-5 flex flex-col sm:flex-row sm:items-start gap-4">
+                                            {/* Product info */}
+                                            <div className="flex items-center gap-3 sm:w-48 shrink-0">
+                                                {review.product?.picture && (
+                                                    <img src={review.product.picture} alt={review.product.title} className="w-10 h-10 rounded-lg object-cover" />
+                                                )}
+                                                <span className="text-xs font-medium text-gray-700 line-clamp-2">{review.product?.title || 'Unknown Product'}</span>
+                                            </div>
+
+                                            {/* Review body */}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-center gap-3 flex-wrap mb-1">
+                                                    <span className="font-semibold text-sm text-gray-900">{review.reviewerName}</span>
+                                                    <div className="flex">
+                                                        {[1,2,3,4,5].map(s => (
+                                                            <span key={s} className={s <= review.rating ? 'text-amber-400 text-sm' : 'text-gray-300 text-sm'}>★</span>
+                                                        ))}
+                                                    </div>
+                                                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                                        review.status === 'approved' ? 'bg-green-100 text-green-700'
+                                                        : review.status === 'rejected' ? 'bg-red-100 text-red-700'
+                                                        : 'bg-yellow-100 text-yellow-700'
+                                                    }`}>
+                                                        {review.status}
+                                                    </span>
+                                                    <span className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                                </div>
+                                                <p className="text-sm text-gray-700 leading-relaxed">{review.comment}</p>
+                                            </div>
+
+                                            {/* Actions */}
+                                            <div className="flex gap-2 sm:flex-col shrink-0">
+                                                {review.status !== 'approved' && (
+                                                    <button
+                                                        onClick={() => handleApproveReview(review._id)}
+                                                        disabled={approveReviewMutation.isPending}
+                                                        className="text-xs bg-green-600 text-white px-3 py-1.5 rounded-md hover:bg-green-700 disabled:opacity-50 font-medium"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                )}
+                                                {review.status !== 'rejected' && (
+                                                    <button
+                                                        onClick={() => handleRejectReview(review._id)}
+                                                        disabled={rejectReviewMutation.isPending}
+                                                        className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-md hover:bg-amber-700 disabled:opacity-50 font-medium"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                )}
+                                                <button
+                                                    onClick={() => handleDeleteReview(review._id)}
+                                                    disabled={deleteReviewMutation.isPending}
+                                                    className="text-xs bg-red-600 text-white px-3 py-1.5 rounded-md hover:bg-red-700 disabled:opacity-50 font-medium"
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}

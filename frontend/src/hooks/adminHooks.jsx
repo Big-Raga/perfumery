@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { adminAuthAPI, adminProductAPI, imageAPI } from "../api/adminAPI";
+import { adminAuthAPI, adminProductAPI, imageAPI, adminReviewAPI } from "../api/adminAPI";
 import { useNavigate } from "react-router-dom";
 
 // Hook for verifying admin auth status
@@ -175,6 +175,52 @@ export const useUploadImage = () => {
         onError: (error) => {
             console.error('Failed to upload image:', error.response?.data?.message);
         }
+    });
+};
+
+// ─── Review Management Hooks ──────────────────────────────────────────────────
+
+// Get all reviews (admin), optionally filtered by status
+export const useAdminReviews = (status) => {
+    return useQuery({
+        queryKey: ['admin-reviews', status],
+        queryFn: async () => {
+            const response = await adminReviewAPI.getAllReviews(status);
+            return response.data.data;
+        },
+    });
+};
+
+// Approve a review
+export const useApproveReview = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (reviewId) => adminReviewAPI.approveReview(reviewId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+        },
+    });
+};
+
+// Reject a review
+export const useRejectReview = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (reviewId) => adminReviewAPI.rejectReview(reviewId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+        },
+    });
+};
+
+// Delete a review
+export const useDeleteReview = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (reviewId) => adminReviewAPI.deleteReview(reviewId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['admin-reviews'] });
+        },
     });
 };
 

@@ -13,6 +13,7 @@ const {
     createType
 } = require("../controllers/admin/adminProductController");
 const parseNotes = require("../middleware/parseNotes");
+const { getAllReviewsAdmin, approveReview, rejectReview, deleteReview } = require('../controllers/reviewController');
 
 // Authentication routes (no middleware needed)
 Router.post("/login-admin", LoginAdmin);
@@ -37,5 +38,11 @@ Router.get("/categories", AuthMiddleware, getAllCategories);
 // Protected types routes
 Router.get("/types", AuthMiddleware, getAllTypes);
 Router.post("/types", AuthMiddleware, createType);
+
+// Protected review management routes
+Router.get("/reviews", AuthMiddleware, getAllReviewsAdmin);
+Router.patch("/reviews/:reviewId/approve", AuthMiddleware, approveReview);
+Router.patch("/reviews/:reviewId/reject", AuthMiddleware, rejectReview);
+Router.delete("/reviews/:reviewId", AuthMiddleware, deleteReview);
 
 module.exports = Router;

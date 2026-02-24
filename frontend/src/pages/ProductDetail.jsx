@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getProductById } from '../api/productAPI';
+import { getProductById, submitReview, getProductReviews } from '../api/productAPI';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -12,6 +12,13 @@ const ProductDetail = () => {
     const [error, setError] = useState(null);
     const [selectedImage, setSelectedImage] = useState(0);
     const [activeTab, setActiveTab] = useState('description');
+
+    // Reviews state
+    const [reviews, setReviews] = useState([]);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewForm, setReviewForm] = useState({ reviewerName: '', rating: 5, comment: '' });
+    const [reviewSubmitting, setReviewSubmitting] = useState(false);
+    const [reviewSubmitMsg, setReviewSubmitMsg] = useState(null); // { type: 'success'|'error', text }
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -32,6 +39,39 @@ const ProductDetail = () => {
             fetchProduct();
         }
     }, [productId]);
+
+    // Fetch approved reviews when the reviews tab is opened
+    useEffect(() => {
+        if (activeTab === 'reviews' && productId) {
+            const fetchReviews = async () => {
+                setReviewsLoading(true);
+                try {
+                    const data = await getProductReviews(productId);
+                    setReviews(data);
+                } catch {
+                    setReviews([]);
+                } finally {
+                    setReviewsLoading(false);
+                }
+            };
+            fetchReviews();
+        }
+    }, [activeTab, productId]);
+
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        setReviewSubmitting(true);
+        setReviewSubmitMsg(null);
+        try {
+            const result = await submitReview(productId, reviewForm);
+            setReviewSubmitMsg({ type: 'success', text: result.message });
+            setReviewForm({ reviewerName: '', rating: 5, comment: '' });
+        } catch (err) {
+            setReviewSubmitMsg({ type: 'error', text: err.response?.data?.message || 'Failed to submit review.' });
+        } finally {
+            setReviewSubmitting(false);
+        }
+    };
 
     const renderStars = (rating) => {
         const stars = [];
@@ -256,6 +296,15 @@ const ProductDetail = () => {
                             >
                                 Fragrance Notes
                             </button>
+                            <button
+                                className={`pb-4 border-b-2 font-medium transition-colors ${activeTab === 'reviews'
+                                    ? 'border-gray-900 text-gray-900'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    }`}
+                                onClick={() => setActiveTab('reviews')}
+                            >
+                                Reviews {reviews.length > 0 && `(${reviews.length})`}
+                            </button>
 
                         </div>
                     </div>
@@ -356,6 +405,127 @@ const ProductDetail = () => {
                             </div>
                         )}
 
+
+                        {/* Reviews Tab */}
+                        {activeTab === 'reviews' && (
+                            <div className="space-y-10">
+                                <h3 className="text-2xl font-bold text-gray-900">Customer Reviews</h3>
+
+                                {/* Approved reviews list */}
+                                {reviewsLoading ? (
+                                    <div className="flex justify-center py-8">
+                                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                                    </div>
+                                ) : reviews.length === 0 ? (
+                                    <p className="text-gray-500 italic">No reviews yet. Be the first to share your thoughts!</p>
+                                ) : (
+                                    <div className="space-y-6">
+                                        {reviews.map((review) => (
+                                            <div key={review._id} className="border border-gray-100 rounded-lg p-5 bg-gray-50">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center font-bold text-amber-700 text-sm">
+                                                            {review.reviewerName.charAt(0).toUpperCase()}
+                                                        </div>
+                                                        <div>
+                                                            <p className="font-semibold text-gray-900 text-sm">{review.reviewerName}</p>
+                                                            <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex">
+                                                        {[1,2,3,4,5].map(s => (
+                                                            <span key={s} className={s <= review.rating ? 'text-amber-400' : 'text-gray-300'}>★</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                                <p className="text-gray-700 text-sm leading-relaxed mt-2">{review.comment}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Divider */}
+                                <hr className="border-gray-200" />
+
+                                {/* Submit review form */}
+                                <div>
+                                    <h4 className="text-xl font-semibold text-gray-900 mb-1">Write a Review</h4>
+                                    <p className="text-sm text-gray-500 mb-5">
+                                        Your review will be sent to our customer support team and published after approval.
+                                    </p>
+
+                                    {reviewSubmitMsg && (
+                                        <div className={`mb-4 px-4 py-3 rounded-lg text-sm font-medium ${
+                                            reviewSubmitMsg.type === 'success'
+                                                ? 'bg-green-50 text-green-800 border border-green-200'
+                                                : 'bg-red-50 text-red-800 border border-red-200'
+                                        }`}>
+                                            {reviewSubmitMsg.type === 'success' ? '✓ ' : '✗ '}{reviewSubmitMsg.text}
+                                        </div>
+                                    )}
+
+                                    <form onSubmit={handleReviewSubmit} className="space-y-4">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+                                                <input
+                                                    type="text"
+                                                    required
+                                                    value={reviewForm.reviewerName}
+                                                    onChange={e => setReviewForm(f => ({ ...f, reviewerName: e.target.value }))}
+                                                    placeholder="e.g. Ahmed K."
+                                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                                                <div className="flex items-center gap-1 mt-1">
+                                                    {[1,2,3,4,5].map(star => (
+                                                        <button
+                                                            key={star}
+                                                            type="button"
+                                                            onClick={() => setReviewForm(f => ({ ...f, rating: star }))}
+                                                            className={`text-2xl transition-colors ${
+                                                                star <= reviewForm.rating ? 'text-amber-400' : 'text-gray-300 hover:text-amber-300'
+                                                            }`}
+                                                        >
+                                                            ★
+                                                        </button>
+                                                    ))}
+                                                    <span className="text-sm text-gray-500 ml-2">{reviewForm.rating}/5</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+                                            <textarea
+                                                required
+                                                value={reviewForm.comment}
+                                                onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))}
+                                                rows={4}
+                                                placeholder="Share your experience with this fragrance..."
+                                                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 resize-none"
+                                            />
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                type="submit"
+                                                disabled={reviewSubmitting}
+                                                className="bg-gray-900 text-white px-6 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
+                                            </button>
+                                            <p className="text-xs text-gray-400 flex items-center gap-1">
+                                                <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                                                </svg>
+                                                Reviews are reviewed by our team before being published.
+                                            </p>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        )}
 
                     </div>
                 </div>

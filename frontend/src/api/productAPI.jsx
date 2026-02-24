@@ -73,3 +73,24 @@ const getAllCategories = async () => {
 export { getAllProducts, getFeaturedProducts, getProductById, getProductsByCategory, getAllCategories };
 export default getAllProducts;
 
+// Review APIs (public)
+export const submitReview = async (productId, reviewData) => {
+    try {
+        const res = await api.post(`/products/${productId}/reviews`, reviewData);
+        return res.data;
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        throw error;
+    }
+};
+
+export const getProductReviews = async (productId) => {
+    try {
+        const res = await api.get(`/products/${productId}/reviews`);
+        return res.data;
+    } catch (error) {
+        console.error('Error fetching reviews:', error);
+        throw error;
+    }
+};
+
