@@ -16,7 +16,22 @@ const notesColorMap = {
   'fruity': '#FFCC80',
   'herbal': '#AED581',
   'cacao': '#D7CCC8',
-  'spicy': '#FFAB91'
+  'spicy': '#FFAB91',
+  'warm spicy': '#FF6F3C',
+  'cinnamon': '#E8A87C',
+  'rose': '#F48FB1',
+  'animalic': '#8D6E63',
+  'patchouli': '#6D4C41',
+  'leather': '#795548',
+  'white floral': '#F5F5F5',
+  'ozonic': '#81D4FA',
+  'aquatic': '#4FC3F7',
+  'floral': '#F06292',
+  'oud': '#9C6644',
+  'musky': '#A1887F',
+  'earthy': '#66BB6A',
+  'balsamic': '#A1887F',
+  'smoky': '#616161'
 };
 
 module.exports = notesColorMap;

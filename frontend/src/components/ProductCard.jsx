@@ -24,7 +24,7 @@ const ProductCard = ({ product, index = 0 }) => {
         <motion.div
             variants={itemVariants}
             whileHover={{ y: -8, scale: 1.02 }}
-            className="bg-white rounded-2xl shadow-lg overflow-hidden group cursor-pointer"
+            className="bg-white rounded-2xl shadow-lg overflow-hidden group"
         >
             <div>
                 <div className="relative overflow-hidden">
@@ -84,7 +84,7 @@ const ProductCard = ({ product, index = 0 }) => {
                             {product.price} Rs
                         </span>
                         <button
-                            className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors"
+                            className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors cursor-pointer"
                             onClick={handleViewDetails}
                         >
                             View Details

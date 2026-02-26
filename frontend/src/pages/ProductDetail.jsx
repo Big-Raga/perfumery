@@ -382,7 +382,7 @@ const ProductDetail = () => {
                                                     return (
                                                         <div key={index} className="flex flex-col gap-1">
                                                             <div
-                                                                className="h-10 rounded-lg flex items-center px-4 transition-transform hover:scale-105 origin-left"
+                                                                className="h-10 rounded-lg flex items-center px-4 transition-shadow hover:shadow-md cursor-pointer"
                                                                 style={{
                                                                     backgroundColor: note.color || '#E0E0E0',
                                                                     width: `${widthPercent}%`
