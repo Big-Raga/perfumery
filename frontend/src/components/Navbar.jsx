@@ -78,7 +78,7 @@ const Navbar = () => {
                             whileHover={{ scale: 1.05 }}
                         >
                             <Link to="/" className="flex items-center space-x-4">
-                                <img src="/logo.svg" alt="House of Oud" className="h-12 w-12" />
+                                <img src="/logo.webp" alt="House of Oud" className="h-12 w-12" />
                                 <span className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
                                     House of Oud
                                 </span>
