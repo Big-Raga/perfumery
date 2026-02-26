@@ -90,6 +90,10 @@ const ProductDetail = () => {
         return stars;
     };
 
+    const formatPrice = (price) => {
+        return `Rs.${price.toLocaleString('en-PK')}`;
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -191,7 +195,7 @@ const ProductDetail = () => {
                         </div>
 
                         <div className="flex items-center space-x-4">
-                            <span className="text-3xl font-bold text-gray-900">{product.price} Rs</span>
+                            <span className="text-3xl font-bold text-gray-900">{formatPrice(product.price)}</span>
                             {product.originalPrice && (
                                 <span className="text-xl text-gray-500 line-through">${product.originalPrice}</span>
                             )}
@@ -249,7 +253,7 @@ const ProductDetail = () => {
                             <button
                                 onClick={() => {
                                     const message = encodeURIComponent(
-                                        `Hi House of Ouds! I'm interested in ordering:\n\n*${product.title}*\nPrice: ${product.price} Rs\n\nPlease let me know the details.`
+                                        `Hi House of Ouds! I'm interested in ordering:\n\n*${product.title}*\nPrice: ${formatPrice(product.price)}\n\nPlease let me know the details.`
                                     );
                                     window.open(`https://wa.me/923480007566?text=${message}`, '_blank');
                                 }}

@@ -7,6 +7,10 @@ const ProductCard = ({ product, index = 0 }) => {
     const { renderStars } = useStarRating();
     const navigate = useNavigate();
 
+    const formatPrice = (price) => {
+        return `Rs.${price.toLocaleString('en-PK')}`;
+    };
+
     const itemVariants = {
         hidden: { y: 20, opacity: 0 },
         visible: {
@@ -81,7 +85,7 @@ const ProductCard = ({ product, index = 0 }) => {
                     {/* Price and Action */}
                     <div className="flex items-center justify-between">
                         <span className="text-xl font-bold text-gray-900">
-                            {product.price} Rs
+                            {formatPrice(product.price)}
                         </span>
                         <button
                             className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors cursor-pointer"
