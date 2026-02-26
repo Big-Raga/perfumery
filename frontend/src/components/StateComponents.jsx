@@ -12,7 +12,7 @@ const ErrorState = ({ error, onRetry }) => {
             <div className="text-red-500 text-xl mb-4">⚠️ {error}</div>
             <button
                 onClick={onRetry}
-                className="bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition-colors"
+                className="bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition-colors cursor-pointer"
             >
                 Try Again
             </button>

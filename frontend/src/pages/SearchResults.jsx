@@ -82,7 +82,7 @@ const SearchResults = () => {
                                 />
                                 <button
                                     type="submit"
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-amber-500 text-white p-3 rounded-full hover:bg-amber-600 transition-colors"
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-amber-500 text-white p-3 rounded-full hover:bg-amber-600 transition-colors cursor-pointer"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -101,7 +101,7 @@ const SearchResults = () => {
                                                 setSearchInput(suggestion);
                                                 navigate(`/search?q=${encodeURIComponent(suggestion)}`);
                                             }}
-                                            className="text-sm bg-amber-100 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-200 transition-colors"
+                                            className="text-sm bg-amber-100 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-200 transition-colors cursor-pointer"
                                         >
                                             {suggestion}
                                         </button>
@@ -148,7 +148,7 @@ const SearchResults = () => {
                                                 setSearchInput(suggestion);
                                                 navigate(`/search?q=${suggestion}`);
                                             }}
-                                            className="bg-amber-100 text-amber-700 px-4 py-2 rounded-full hover:bg-amber-200 transition-colors"
+                                            className="bg-amber-100 text-amber-700 px-4 py-2 rounded-full hover:bg-amber-200 transition-colors cursor-pointer"
                                         >
                                             {suggestion}
                                         </button>
@@ -184,13 +184,13 @@ const SearchResults = () => {
                             <div className="flex flex-wrap gap-4 justify-center">
                                 <button
                                     onClick={() => navigate('/products')}
-                                    className="bg-white text-amber-600 border border-amber-600 px-6 py-3 rounded-full font-semibold hover:bg-amber-50 transition-all"
+                                    className="bg-white text-amber-600 border border-amber-600 px-6 py-3 rounded-full font-semibold hover:bg-amber-50 transition-all cursor-pointer"
                                 >
                                     Browse All Products
                                 </button>
                                 <button
                                     onClick={() => navigate('/products/featured')}
-                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all"
+                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all cursor-pointer"
                                 >
                                     View Featured
                                 </button>

@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useFeaturedProducts } from "../hooks/productHooks";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 
 const UserHome = () => {
+    const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
     const { data, isLoading, isError } = useFeaturedProducts();
@@ -110,7 +111,8 @@ const UserHome = () => {
                         transition={{ duration: 0.8, delay: 0.6 }}
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
-                        className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold shadow-2xl hover:shadow-amber-500/25 transition-all"
+                        onClick={() => navigate('/products')}
+                        className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold shadow-2xl hover:shadow-amber-500/25 transition-all cursor-pointer"
                     >
                         Explore Collection
                     </motion.button>
@@ -122,7 +124,7 @@ const UserHome = () => {
                         {heroSlides.map((_, index) => (
                             <motion.button
                                 key={index}
-                                className={`w-3 h-3 rounded-full transition-all ${index === currentSlide ? 'bg-amber-400' : 'bg-white/50'
+                                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${index === currentSlide ? 'bg-amber-400' : 'bg-white/50'
                                     }`}
                                 whileHover={{ scale: 1.2 }}
                                 onClick={() => setCurrentSlide(index)}
@@ -236,7 +238,7 @@ const UserHome = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all"
+                                className="bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer"
                             >
                                 Learn More
                             </motion.button>

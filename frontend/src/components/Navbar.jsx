@@ -100,7 +100,7 @@ const Navbar = () => {
                                     >
                                         {item.hasDropdown ? (
                                             <motion.button
-                                                className={`text-white hover:text-amber-400 font-medium transition-colors relative group flex items-center space-x-1 ${isActive(item.path) ? 'text-amber-400' : ''
+                                                className={`text-white hover:text-amber-400 font-medium transition-colors relative group flex items-center space-x-1 cursor-pointer ${isActive(item.path) ? 'text-amber-400' : ''
                                                     }`}
                                                 whileHover={{ y: -2 }}
                                                 initial={{ opacity: 0, y: -20 }}
@@ -184,7 +184,7 @@ const Navbar = () => {
                                     />
                                     <button
                                         type="submit"
-                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-amber-400 transition-colors"
+                                        className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-amber-400 transition-colors cursor-pointer"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -197,7 +197,7 @@ const Navbar = () => {
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.95 }}
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                className="md:hidden p-2 text-white hover:text-amber-400 transition-colors"
+                                className="md:hidden p-2 text-white hover:text-amber-400 transition-colors cursor-pointer"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     {isMobileMenuOpen ? (
@@ -235,7 +235,7 @@ const Navbar = () => {
                                     />
                                     <button
                                         type="submit"
-                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-amber-400 transition-colors"
+                                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-amber-400 transition-colors cursor-pointer"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
