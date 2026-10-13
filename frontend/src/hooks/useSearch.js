@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { getAllProducts } from '../api/productAPI';
+import { getProductLabel } from '../utils/catalog';
 
 const useSearch = (query) => {
     const [products, setProducts] = useState([]);
@@ -42,21 +43,19 @@ const useSearch = (query) => {
         return products.filter(product => {
             const title = product.title?.toLowerCase() || '';
             const description = product.description?.toLowerCase() || '';
-            const category = product.category?.name?.toLowerCase() || '';
+            const category = getProductLabel(product).toLowerCase();
             const type = product.Type?.name?.toLowerCase() || '';
+            const impression = product.impression?.toLowerCase() || '';
 
             // Search in notes if available
-            const notes = [
-                ...(product.notes?.top || []),
-                ...(product.notes?.middle || []),
-                ...(product.notes?.base || [])
-            ].join(' ').toLowerCase();
+            const notes = (product.notes || []).map(note => note.name).join(' ').toLowerCase();
 
             // Priority scoring for better results
             const fields = [
                 { text: title, weight: 3 },
                 { text: category, weight: 2 },
                 { text: type, weight: 2 },
+                { text: impression, weight: 2 },
                 { text: description, weight: 1 },
                 { text: notes, weight: 1 }
             ];

@@ -29,3 +29,6 @@ frontend/node_modules/
 *.njsproj
 *.sln
 *.sw?
+
+# DB backups made by seeders
+backend/seeders/backups/

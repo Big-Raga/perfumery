@@ -4,11 +4,13 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
     const collectionLinks = [
+        { name: 'Featured', path: '/products/featured' },
+        { name: 'Perfumes', path: '/products/perfume' },
+        { name: 'Classic', path: '/products/perfume/classic' },
+        { name: 'Premium', path: '/products/perfume/premium' },
         { name: 'Men', path: '/products/men' },
         { name: 'Women', path: '/products/women' },
-        { name: 'Unisex', path: '/products/unisex' },
-        { name: 'Luxury', path: '/products/luxury'},
-        { name: 'Featured', path: '/products/featured' }
+        { name: 'Oud', path: '/products/oud' }
     ];
 
     const companyLinks = [

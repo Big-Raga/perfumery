@@ -31,7 +31,73 @@ const notesColorMap = {
   'musky': '#A1887F',
   'earthy': '#66BB6A',
   'balsamic': '#A1887F',
-  'smoky': '#616161'
+  'smoky': '#616161',
+
+  // Individual ingredient notes (light tints so the dark badge text stays readable)
+  // Citrus
+  'bergamot': '#FFF176',
+  'lemon': '#FFF59D',
+  'citron': '#FFEE58',
+  'orange': '#FFB74D',
+  'mandarin': '#FFCC80',
+  'grapefruit': '#FFAB91',
+  'yuzu': '#F0F4C3',
+  // Fruits
+  'apple': '#EF9A9A',
+  'green apple': '#C5E1A5',
+  'pear': '#DCE775',
+  'pineapple': '#FFE082',
+  'peach': '#FFCCBC',
+  'raspberry': '#F48FB1',
+  'pomegranate': '#E57373',
+  'passion fruit': '#FFB74D',
+  'melon': '#C5E1A5',
+  'fruity accord': '#FFCC80',
+  // Florals
+  'jasmine': '#FFFDE7',
+  'tuberose': '#F5F5F5',
+  'peony': '#F8BBD0',
+  'freesia': '#E1BEE7',
+  'lotus': '#F3E5F5',
+  'iris': '#D1C4E9',
+  'orris': '#D1C4E9',
+  'violet leaf': '#B2DFDB',
+  'ylang-ylang': '#FFF9C4',
+  'rangoon creeper': '#FCE4EC',
+  'vanilla orchid': '#FFF8E1',
+  // Spices
+  'saffron': '#FFB74D',
+  'cardamom': '#C5E1A5',
+  'ginger': '#FFE0B2',
+  'pink pepper': '#F8BBD0',
+  'licorice': '#BCAAA4',
+  // Herbs & green
+  'mint': '#B2DFDB',
+  'sage': '#C5E1A5',
+  'green tea': '#DCEDC8',
+  'black tea': '#BCAAA4',
+  'fir': '#80CBC4',
+  // Woods & earth
+  'cedarwood': '#D7CCC8',
+  'sandalwood': '#EFEBE9',
+  'birch': '#BDBDBD',
+  'vetiver': '#A5D6A7',
+  // Resins, ambers & musks
+  'incense': '#BDBDBD',
+  'ambergris': '#ECEFF1',
+  'ambroxan': '#EEEEEE',
+  'musk': '#D7CCC8',
+  'white musk': '#F5F5F5',
+  'tonka bean': '#D7CCC8',
+  // Gourmand
+  'chestnut': '#BCAAA4',
+  'toffee': '#FFCC80',
+  'marshmallow': '#FCE4EC',
+  'sugar': '#FFF8E1',
+  'brandy': '#FFCC80',
+  // Aquatic
+  'marine notes': '#81D4FA',
+  'sea salt': '#B3E5FC'
 };
 
 module.exports = notesColorMap;

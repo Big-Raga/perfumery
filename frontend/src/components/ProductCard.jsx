@@ -2,10 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useStarRating from '../hooks/useStarRating.jsx';
+import { getProductLabel, PLACEHOLDER_PICTURE } from '../utils/catalog';
 
 const ProductCard = ({ product, index = 0 }) => {
     const { renderStars } = useStarRating();
     const navigate = useNavigate();
+    const label = getProductLabel(product);
+    const isPlaceholder = product.picture === PLACEHOLDER_PICTURE;
 
     const formatPrice = (price) => {
         return `Rs.${price.toLocaleString('en-PK')}`;
@@ -35,7 +38,7 @@ const ProductCard = ({ product, index = 0 }) => {
                     <img
                         src={product.picture}
                         alt={product.title}
-                        className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500"
+                        className={`w-full h-64 group-hover:scale-105 transition-transform duration-500 ${isPlaceholder ? 'object-contain bg-black p-10' : 'object-cover'}`}
                         loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -55,9 +58,9 @@ const ProductCard = ({ product, index = 0 }) => {
                 <div className="p-6">
                     {/* Category and Type */}
                     <div className="flex items-center gap-2 mb-2">
-                        {product.category && (
+                        {label && (
                             <span className="text-xs text-amber-600 uppercase tracking-wide font-medium">
-                                {product.category.name}
+                                {label}
                             </span>
                         )}
                         {product.Type && (
@@ -71,6 +74,13 @@ const ProductCard = ({ product, index = 0 }) => {
                     <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                         {product.title}
                     </h3>
+
+                    {/* Impression */}
+                    {product.impression && (
+                        <p className="text-sm text-gray-500 italic mb-2 line-clamp-1">
+                            Inspired by {product.impression}
+                        </p>
+                    )}
 
                     {/* Rating */}
                     <div className="flex items-center gap-1 mb-3">

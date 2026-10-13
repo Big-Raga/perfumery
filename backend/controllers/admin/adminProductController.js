@@ -2,6 +2,18 @@ const Product = require("../../models/product");
 const Category = require("../../models/category");
 const Type = require("../../models/Type");
 
+// Normalise catalogue fields: empty selections become null, and ouds have no range/gender
+const normaliseCatalogFields = (data) => {
+    for (const field of ['productLine', 'range', 'gender']) {
+        if (data[field] === '') data[field] = null;
+    }
+    if (data.productLine === 'oud') {
+        data.range = null;
+        data.gender = null;
+    }
+    return data;
+};
+
 // Get all products for admin (with full details)
 const getAllProductsAdmin = async (req, res) => {
     try {
@@ -53,14 +65,18 @@ const createProduct = async (req, res) => {
         const {
             title,
             description,
+            impression,
             picture,
             price,
             category,
+            productLine,
+            range,
+            gender,
             notes,
             Type,
             stock,
             featured
-        } = req.body;
+        } = normaliseCatalogFields(req.body);
 
         // Validate required fields
         if (!title || !picture || !price || !stock) {
@@ -74,9 +90,13 @@ const createProduct = async (req, res) => {
         const newProduct = new Product({
             title,
             description,
+            impression,
             picture,
             price,
             category,
+            productLine,
+            range,
+            gender,
             notes,
             Type,
             stock,
@@ -102,7 +122,7 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const updateData = req.body;
+        const updateData = normaliseCatalogFields(req.body);
 
         // Remove empty string fields that are ObjectId refs
         if (updateData.category === '') delete updateData.category;

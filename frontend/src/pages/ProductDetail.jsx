@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, submitReview, getProductReviews } from '../api/productAPI';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { getProductLabel } from '../utils/catalog';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -201,11 +202,20 @@ const ProductDetail = () => {
                             )}
                         </div>
 
-                        {product.category && (
+                        {getProductLabel(product) && (
                             <div className="flex items-center space-x-2">
-                                <span className="text-gray-600">Category:</span>
+                                <span className="text-gray-600">Collection:</span>
                                 <span className="bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                                    {product.category.name}
+                                    {getProductLabel(product)}
+                                </span>
+                            </div>
+                        )}
+
+                        {product.impression && (
+                            <div className="flex items-center space-x-2">
+                                <span className="text-gray-600">Inspired by:</span>
+                                <span className="bg-amber-50 px-3 py-1 rounded-full text-sm font-medium text-amber-800">
+                                    {product.impression}
                                 </span>
                             </div>
                         )}
@@ -319,6 +329,11 @@ const ProductDetail = () => {
                             <div className="space-y-8">
                                 <div>
                                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Product Description</h3>
+                                    {product.impression && (
+                                        <p className="text-amber-700 font-medium mb-3">
+                                            Our impression of {product.impression}
+                                        </p>
+                                    )}
                                     <p className="text-gray-600 leading-relaxed text-lg">
                                         {product.description || `Discover the captivating essence of ${product.title}, a masterfully crafted fragrance that embodies sophistication and elegance. This exquisite scent opens with vibrant top notes that immediately capture attention, followed by a heart of luxurious floral and aromatic accords that create depth and character.`}
                                     </p>
@@ -362,7 +377,7 @@ const ProductDetail = () => {
 
                                 <div className="bg-gray-50 p-6 rounded-lg">
                                     <h4 className="text-xl font-semibold text-gray-900 mb-3">Fragrance Family</h4>
-                                    <p className="text-gray-600">{product.category?.name || 'Luxury Collection'} - A sophisticated blend that appeals to discerning fragrance enthusiasts.</p>
+                                    <p className="text-gray-600">{getProductLabel(product) || 'Luxury Collection'} - A sophisticated blend that appeals to discerning fragrance enthusiasts.</p>
                                 </div>
                             </div>
                         )}

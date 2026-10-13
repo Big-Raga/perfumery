@@ -1,9 +1,12 @@
 const Product = require("../models/product")
 const Category = require("../models/category")
 
+// Fields returned for product listings (cards, filtering, search)
+const LIST_FIELDS = "_id title picture price category rating productLine range gender impression description notes featured";
+
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().select("_id title picture price category rating").populate("category");
+        const products = await Product.find().select(LIST_FIELDS).populate("category");
         res.json(products);
     }
     catch (error) {
@@ -13,7 +16,7 @@ const getAllProducts = async (req, res) => {
 
 const getFeaturedProducts = async (req, res) => {
     try {
-        const products = await Product.find({ featured: true }).select("_id title picture price category rating").populate("category");
+        const products = await Product.find({ featured: true }).select(LIST_FIELDS).populate("category");
         res.json(products);
     }
     catch (error) {
@@ -26,7 +29,7 @@ const getProductByCategory = async (req, res) => {
     try {
         console.log(`Fetching products for category ID: ${categoryId}`);
         console.log(`all categories in DB:` + await Category.find({}));
-        const products = await Product.find({ category: categoryId }).select("_id title picture price category rating").populate("category");
+        const products = await Product.find({ category: categoryId }).select(LIST_FIELDS).populate("category");
         res.json(products);
     }
     catch (error) {

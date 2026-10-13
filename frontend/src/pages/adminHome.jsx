@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAdminLogout, useAdminProducts, useAdminCategories, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useAdminReviews, useApproveReview, useRejectReview, useDeleteReview } from '../hooks/adminHooks';
+import { useAdminLogout, useAdminProducts, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useAdminReviews, useApproveReview, useRejectReview, useDeleteReview } from '../hooks/adminHooks';
+import { getProductLabel, PRODUCT_LINES, RANGES, GENDERS } from '../utils/catalog';
 
 const AdminHome = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -9,7 +10,6 @@ const AdminHome = () => {
 
     const logoutMutation = useAdminLogout();
     const { data: products, isLoading: productsLoading } = useAdminProducts();
-    const { data: categories, isLoading: categoriesLoading } = useAdminCategories();
     const { data: types, isLoading: typesLoading } = useAdminTypes();
 
     const createProductMutation = useCreateProduct();
@@ -158,7 +158,7 @@ const AdminHome = () => {
                                         <thead className="bg-gray-50">
                                             <tr>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Collection</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
                                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
@@ -179,12 +179,12 @@ const AdminHome = () => {
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                                        {product.category?.name || 'No Category'}
+                                                        {getProductLabel(product) || <span className="text-red-600">Unclassified</span>}
                                                     </td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                         {product.Type?.name || 'No Type'}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${product.price}</td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Rs.{product.price?.toLocaleString('en-PK')}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{product.stock}</td>
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.featured
@@ -232,8 +232,10 @@ const AdminHome = () => {
                                 <p className="text-2xl font-bold text-green-900">{products?.filter(p => p.featured).length || 0}</p>
                             </div>
                             <div className="bg-blue-50 p-4 rounded-lg">
-                                <h3 className="text-sm font-medium text-blue-600">Categories</h3>
-                                <p className="text-2xl font-bold text-blue-900">{categories?.length || 0}</p>
+                                <h3 className="text-sm font-medium text-blue-600">Perfumes / Ouds</h3>
+                                <p className="text-2xl font-bold text-blue-900">
+                                    {products?.filter(p => p.productLine === 'perfume').length || 0} / {products?.filter(p => p.productLine === 'oud').length || 0}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -344,7 +346,6 @@ const AdminHome = () => {
             {showModal && (
                 <ProductModal
                     product={editingProduct}
-                    categories={categories}
                     types={types}
                     onClose={(message) => {
                         setShowModal(false);
@@ -368,13 +369,16 @@ const AdminHome = () => {
 };
 
 // Product Modal Component
-const ProductModal = ({ product, categories, types, onClose, createMutation, updateMutation }) => {
+const ProductModal = ({ product, types, onClose, createMutation, updateMutation }) => {
     const [formData, setFormData] = useState({
         title: product?.title || '',
         description: product?.description || '',
+        impression: product?.impression || '',
         picture: product?.picture || '',
         price: product?.price || '',
-        category: product?.category?._id || '',
+        productLine: product?.productLine || '',
+        range: product?.range || '',
+        gender: product?.gender || '',
         Type: product?.Type?._id || '',
         notes: product?.notes?.map(n => n.name).join(', ') || '',
         stock: product?.stock || '',
@@ -439,8 +443,13 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
             stock: parseInt(formData.stock)
         };
 
+        // Ouds have no range or gender
+        if (submitData.productLine === 'oud') {
+            submitData.range = '';
+            submitData.gender = '';
+        }
+
         // Remove empty optional ObjectId fields to avoid MongoDB CastError
-        if (!submitData.category) delete submitData.category;
         if (!submitData.Type) delete submitData.Type;
         // Remove empty notes
         if (!submitData.notes) delete submitData.notes;
@@ -502,6 +511,18 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
                             />
                         </div>
 
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Impression (inspired by)</label>
+                            <input
+                                type="text"
+                                name="impression"
+                                placeholder="e.g. Aventus by Creed"
+                                value={formData.impression}
+                                onChange={handleChange}
+                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
+
                         {/* Image Upload Section */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
@@ -530,7 +551,7 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Picture URL (if not uploading)</label>
                             <input
-                                type="url"
+                                type="text"
                                 name="picture"
                                 value={formData.picture}
                                 onChange={handleChange}
@@ -567,21 +588,58 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
                             </div>
                         </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Category</label>
-                            <select
-                                name="category"
-                                value={formData.category}
-                                onChange={handleChange}
-                                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                                <option value="">Select Category</option>
-                                {categories?.map(category => (
-                                    <option key={category._id} value={category._id}>
-                                        {category.name}
-                                    </option>
-                                ))}
-                            </select>
+                        <div className={`grid gap-4 ${formData.productLine === 'oud' ? 'grid-cols-1' : 'grid-cols-3'}`}>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700">Collection</label>
+                                <select
+                                    name="productLine"
+                                    value={formData.productLine}
+                                    onChange={handleChange}
+                                    required
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                >
+                                    <option value="">Select</option>
+                                    {Object.entries(PRODUCT_LINES).map(([value, label]) => (
+                                        <option key={value} value={value}>{label}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {formData.productLine !== 'oud' && (
+                                <>
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Range</label>
+                                        <select
+                                            name="range"
+                                            value={formData.range}
+                                            onChange={handleChange}
+                                            required={formData.productLine === 'perfume'}
+                                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                        >
+                                            <option value="">Select</option>
+                                            {Object.entries(RANGES).map(([value, label]) => (
+                                                <option key={value} value={value}>{label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Gender</label>
+                                        <select
+                                            name="gender"
+                                            value={formData.gender}
+                                            onChange={handleChange}
+                                            required={formData.productLine === 'perfume'}
+                                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                                        >
+                                            <option value="">Select</option>
+                                            {Object.entries(GENDERS).map(([value, label]) => (
+                                                <option key={value} value={value}>{label}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <div>
@@ -607,7 +665,7 @@ const ProductModal = ({ product, categories, types, onClose, createMutation, upd
                             <input
                                 type="text"
                                 name="notes"
-                                placeholder="Enter notes separated by commas (e.g., vanilla, woody, citrus, fresh)"
+                                placeholder="3-4 notes separated by commas (e.g., bergamot, lavender, vanilla)"
                                 value={formData.notes}
                                 onChange={handleChange}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-sm"

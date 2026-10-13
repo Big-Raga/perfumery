@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
@@ -6,13 +6,14 @@ import ProductCard from '../components/ProductCard';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import { ErrorState, EmptyState } from '../components/StateComponents';
 import useProducts from '../hooks/useProducts';
-import useCategoryTitle from '../hooks/useCategoryTitle';
+import { getFilterFromParams, getFilterTitle } from '../utils/catalog';
 import Footer from '../components/Footer';
 
 const Products = () => {
-    const { category = 'all' } = useParams();
-    const { products, loading, error, refetch } = useProducts(category);
-    const categoryTitle = useCategoryTitle(category);
+    const { line, range, gender } = useParams();
+    const filter = useMemo(() => getFilterFromParams({ line, range, gender }), [line, range, gender]);
+    const { products, loading, error, refetch } = useProducts(filter);
+    const categoryTitle = getFilterTitle(filter);
 
     const containerVariants = {
         hidden: { opacity: 0 },

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { collectionLinks } from "../utils/catalog";
 
 const Navbar = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -16,14 +17,7 @@ const Navbar = () => {
             name: 'Products',
             path: '/products',
             hasDropdown: true,
-            dropdownItems: [
-                { name: 'All Products', path: '/products' },
-                { name: 'Men\'s Collection', path: '/products/men' },
-                { name: 'Women\'s Collection', path: '/products/women' },
-                { name: 'Unisex Collection', path: '/products/unisex' },
-                { name: 'Luxury Collection', path: '/products/luxury' },    
-                { name: 'Featured Products', path: '/products/featured' },
-            ]
+            dropdownItems: collectionLinks
         },
         { name: 'Contact', path: '/contact', hasDropdown: false },
     ];
@@ -149,7 +143,7 @@ const Navbar = () => {
                                                                 <Link
                                                                     key={dropdownItem.name}
                                                                     to={dropdownItem.path}
-                                                                    className="block px-4 py-3 text-white hover:text-amber-400 hover:bg-amber-500/10 transition-colors"
+                                                                    className={`block py-3 text-white hover:text-amber-400 hover:bg-amber-500/10 transition-colors ${dropdownItem.indent ? 'pl-8 pr-4 text-sm' : 'px-4'}`}
                                                                     onClick={() => setIsProductsDropdownOpen(false)}
                                                                 >
                                                                     <motion.div
@@ -263,7 +257,7 @@ const Navbar = () => {
                                                             key={dropdownItem.name}
                                                             to={dropdownItem.path}
                                                             onClick={() => setIsMobileMenuOpen(false)}
-                                                            className="block text-white/80 hover:text-amber-400 transition-colors py-2"
+                                                            className={`block text-white/80 hover:text-amber-400 transition-colors py-2 ${dropdownItem.indent ? 'pl-4 text-sm' : ''}`}
                                                         >
                                                             <motion.div
                                                                 initial={{ opacity: 0, x: 30 }}
