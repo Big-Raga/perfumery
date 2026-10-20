@@ -35,7 +35,7 @@ const Navbar = () => {
         { name: 'Contact', path: '/contact' },
     ];
 
-    const navLinkClass = 'relative group flex items-center h-full text-xs lg:text-sm font-semibold uppercase tracking-wider lg:tracking-[0.2em] hover:text-white transition-colors leading-none';
+    const navLinkClass = 'relative group flex items-center h-full text-xs lg:text-sm font-semibold uppercase tracking-wider lg:tracking-[0.2em] antialiased hover:text-white transition-colors leading-none';
 
     const isExactActive = (path) => location.pathname === path;
 
@@ -79,10 +79,10 @@ const Navbar = () => {
                 initial={{ y: -100 }}
                 animate={{ y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="fixed top-0 w-full z-50 bg-black/95 backdrop-blur-md shadow-lg border-b border-white/20"
+                className="fixed top-0 w-full z-50 bg-black shadow-lg border-b border-white/20"
             >
                 {/* Top Row - Logo, Search and Socials */}
-                <div className="container mx-auto px-6 py-3">
+                <div className="max-w-7xl w-full mx-auto px-6 py-3">
                     <div className="flex items-center justify-between">
                         <motion.div whileHover={{ scale: 1.03 }}>
                             <Link to="/" className="flex items-center">
@@ -90,7 +90,7 @@ const Navbar = () => {
                             </Link>
                         </motion.div>
 
-                        <div className="flex items-center space-x-5">
+                        <div className="flex items-center gap-5">
                             {/* Search Bar */}
                             <form onSubmit={handleDesktopSearch} className="relative hidden md:block">
                                 <input
@@ -146,9 +146,9 @@ const Navbar = () => {
 
                 {/* Bottom Row - Desktop Navigation */}
                 <div className="hidden md:block border-t border-white/10">
-                    <div className="container mx-auto px-6">
-                        <div className="flex items-center space-x-5 lg:space-x-10">
-                            {desktopNavItems.map((item, index) => (
+                    <div className="max-w-7xl w-full mx-auto px-6">
+                        <div className="flex items-center justify-between">
+                            {desktopNavItems.map((item) => (
                                 <div
                                     key={item.name}
                                     className="relative flex items-center h-12"
@@ -156,11 +156,8 @@ const Navbar = () => {
                                     onMouseLeave={() => item.hasDropdown && setIsProductsDropdownOpen(false)}
                                 >
                                     {item.hasDropdown ? (
-                                        <motion.button
-                                            className={`${navLinkClass} flex items-center space-x-1 cursor-pointer ${isActive(item.path) ? 'text-white' : 'text-white/70'}`}
-                                            initial={{ opacity: 0, y: -10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: index * 0.05 }}
+                                        <button
+                                            className={`${navLinkClass} flex items-center space-x-1 cursor-pointer ${isActive(item.path) ? 'text-white' : 'text-white/80'}`}
                                         >
                                             <span>{item.name}</span>
                                             <svg className="w-3.5 h-3.5 transition-transform duration-200"
@@ -168,18 +165,15 @@ const Navbar = () => {
                                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                             </svg>
-                                        </motion.button>
+                                        </button>
                                     ) : (
                                         <Link to={item.path} className="flex items-center h-full">
-                                            <motion.span
-                                                className={`${navLinkClass} ${isExactActive(item.path) ? 'text-white' : 'text-white/70'}`}
-                                                initial={{ opacity: 0, y: -10 }}
-                                                animate={{ opacity: 1, y: 0 }}
-                                                transition={{ delay: index * 0.05 }}
+                                            <span
+                                                className={`${navLinkClass} ${isExactActive(item.path) ? 'text-white' : 'text-white/80'}`}
                                             >
                                                 {item.name}
                                                 <span className={`absolute bottom-3 left-0 h-px bg-white transition-all duration-300 ${isExactActive(item.path) ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
-                                            </motion.span>
+                                            </span>
                                         </Link>
                                     )}
 

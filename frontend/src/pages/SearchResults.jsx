@@ -57,7 +57,7 @@ const SearchResults = () => {
             <Navbar />
 
             <div className="pt-24 md:pt-40 pb-12">
-                <div className="container mx-auto px-4 md:px-6">
+                <div className="max-w-7xl w-full mx-auto px-4 md:px-6">
                     {/* Search Header */}
                     <motion.div
                         initial={{ y: -50, opacity: 0 }}

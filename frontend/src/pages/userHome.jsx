@@ -157,7 +157,7 @@ const UserHome = () => {
 
             {/* Featured Products */}
             <section className="py-12 md:py-20 px-4 md:px-6">
-                <div className="container mx-auto">
+                <div className="max-w-7xl w-full mx-auto">
                     <motion.div
                         variants={containerVariants}
                         initial="hidden"
@@ -219,7 +219,7 @@ const UserHome = () => {
 
             {/* About Section */}
             <section className="py-12 md:py-20 bg-neutral-100">
-                <div className="container mx-auto px-4 md:px-6">
+                <div className="max-w-7xl w-full mx-auto px-4 md:px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
                         <motion.div
                             initial={{ x: -50, opacity: 0 }}
@@ -270,7 +270,7 @@ const UserHome = () => {
 
             {/* Newsletter */}
             {/* <section className="py-12 md:py-20 bg-gradient-to-r from-black to-neutral-800">
-                <div className="container mx-auto px-4 md:px-6 text-center">
+                <div className="max-w-7xl w-full mx-auto px-4 md:px-6 text-center">
                     <motion.div
                         initial={{ y: 50, opacity: 0 }}
                         whileInView={{ y: 0, opacity: 1 }}
