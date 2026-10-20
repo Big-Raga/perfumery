@@ -24,7 +24,7 @@ const Footer = () => {
     ];
 
     return (
-        <footer className="bg-gray-900 text-white py-8 md:py-12">
+        <footer className="bg-black text-white py-8 md:py-12">
             <div className="max-w-7xl w-full mx-auto px-4 md:px-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6">
                     {/* Logo and Description */}
@@ -41,7 +41,7 @@ const Footer = () => {
                                 House of Oud
                             </span>
                         </div>
-                        <p className="text-gray-400 text-sm md:text-base">
+                        <p className="text-neutral-400 text-sm md:text-base">
                             Crafting exceptional fragrances since 2013.
                         </p>
                     </motion.div>
@@ -60,7 +60,7 @@ const Footer = () => {
                                 <div key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-white transition-colors text-xs md:text-sm whitespace-nowrap"
+                                        className="text-neutral-400 hover:text-white transition-colors text-xs md:text-sm whitespace-nowrap"
                                     >
                                         {item.name}
                                     </Link>
@@ -83,7 +83,7 @@ const Footer = () => {
                                 <li key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-white transition-colors text-sm md:text-base"
+                                        className="text-neutral-400 hover:text-white transition-colors text-sm md:text-base"
                                     >
                                         {item.name}
                                     </Link>
@@ -106,7 +106,7 @@ const Footer = () => {
                                 <li key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-white transition-colors text-sm md:text-base"
+                                        className="text-neutral-400 hover:text-white transition-colors text-sm md:text-base"
                                     >
                                         {item.name}
                                     </Link>
@@ -116,7 +116,7 @@ const Footer = () => {
                     </motion.div>
                 </div>
 
-                <div className="border-t border-gray-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-gray-400">
+                <div className="border-t border-neutral-800 mt-6 md:mt-8 pt-6 md:pt-8 text-center text-neutral-400">
                     <p className="text-sm md:text-base">&copy; 2025 House of Oud. All rights reserved.</p>
                 </div>
             </div>

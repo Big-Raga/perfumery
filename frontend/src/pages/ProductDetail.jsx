@@ -4,6 +4,7 @@ import { getProductById, submitReview, getProductReviews } from '../api/productA
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { getProductLabel } from '../utils/catalog';
+import { WHATSAPP_NUMBER, INSTAGRAM_DM_URL } from '../utils/contact';
 
 const ProductDetail = () => {
     const { productId } = useParams();
@@ -12,6 +13,7 @@ const ProductDetail = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedImage, setSelectedImage] = useState(0);
+    const [igCopied, setIgCopied] = useState(false);
     const [activeTab, setActiveTab] = useState('description');
 
     // Reviews state
@@ -259,13 +261,13 @@ const ProductDetail = () => {
                             )}
                         </div>
 
-                        <div className="flex space-x-4">    
+                        <div className="flex flex-wrap gap-4">
                             <button
                                 onClick={() => {
                                     const message = encodeURIComponent(
                                         `Hi House of Ouds! I'm interested in ordering:\n\n*${product.title}*\nPrice: ${formatPrice(product.price)}\n\nPlease let me know the details.`
                                     );
-                                    window.open(`https://wa.me/923480007566?text=${message}`, '_blank');
+                                    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
                                 }}
                                 className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700 transition-colors w-64 flex items-center justify-center space-x-2 cursor-pointer"
                             >
@@ -275,7 +277,36 @@ const ProductDetail = () => {
                                 <span>Order on WhatsApp</span>
                             </button>
 
+                            {/* Instagram DMs can't be pre-filled, so copy the order message for the customer to paste */}
+                            <button
+                                onClick={async () => {
+                                    const message = `Hi House of Ouds! I'm interested in ordering:\n\n${product.title}\nPrice: ${formatPrice(product.price)}\n\nPlease let me know the details.`;
+                                    try {
+                                        await navigator.clipboard.writeText(message);
+                                        setIgCopied(true);
+                                        setTimeout(() => setIgCopied(false), 4000);
+                                    } catch {
+                                        // clipboard blocked; still open Instagram
+                                    }
+                                    window.open(INSTAGRAM_DM_URL, '_blank');
+                                }}
+                                className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity w-64 flex items-center justify-center space-x-2 cursor-pointer"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                                    <circle cx="12" cy="12" r="4" />
+                                    <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none" />
+                                </svg>
+                                <span>Order on Instagram</span>
+                            </button>
+
                         </div>
+
+                        {igCopied && (
+                            <p className="text-sm text-gray-600 -mt-2">
+                                Order details copied. Paste them into the Instagram chat.
+                            </p>
+                        )}
 
                         {product.inStock !== undefined && (
                             <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${product.inStock

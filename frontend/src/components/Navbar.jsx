@@ -81,35 +81,35 @@ const Navbar = () => {
                 transition={{ duration: 0.8 }}
                 className="fixed top-0 w-full z-50 bg-black shadow-lg border-b border-white/20"
             >
-                {/* Top Row - Logo, Search and Socials */}
+                {/* Top Row - Search, centred Logo and Socials */}
                 <div className="max-w-7xl w-full mx-auto px-6 py-3">
-                    <div className="flex items-center justify-between">
-                        <motion.div whileHover={{ scale: 1.03 }}>
+                    <div className="flex items-center justify-between md:grid md:grid-cols-3">
+                        {/* Search Bar */}
+                        <form onSubmit={handleDesktopSearch} className="relative hidden md:block md:justify-self-start">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={handleSearchInputChange}
+                                placeholder="Search products..."
+                                className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 pr-10 text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/20 transition-all w-56 lg:w-72"
+                            />
+                            <button
+                                type="submit"
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors cursor-pointer"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </button>
+                        </form>
+
+                        <motion.div whileHover={{ scale: 1.03 }} className="md:justify-self-center">
                             <Link to="/" className="flex items-center">
                                 <img src="/logo_white.png" alt="House of Oud by Al-Jabbal" className="h-11 md:h-14 w-auto" />
                             </Link>
                         </motion.div>
 
-                        <div className="flex items-center gap-5">
-                            {/* Search Bar */}
-                            <form onSubmit={handleDesktopSearch} className="relative hidden md:block">
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={handleSearchInputChange}
-                                    placeholder="Search products..."
-                                    className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 pr-10 text-white placeholder-white/70 focus:outline-none focus:border-white focus:bg-white/20 transition-all w-56 lg:w-72"
-                                />
-                                <button
-                                    type="submit"
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white transition-colors cursor-pointer"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                    </svg>
-                                </button>
-                            </form>
-
+                        <div className="flex items-center gap-5 md:justify-self-end">
                             {/* Social Links */}
                             <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
                                 className="hidden md:block text-white hover:text-white transition-colors">
