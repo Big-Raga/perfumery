@@ -26,10 +26,10 @@ const Products = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="min-h-screen bg-white">
             <Navbar />
 
-            <div className="pt-24 pb-12">
+            <div className="pt-24 md:pt-40 pb-12">
                 <div className="container mx-auto px-4 md:px-6">
                     {/* Header */}
                     <motion.div
@@ -38,7 +38,7 @@ const Products = () => {
                         transition={{ duration: 0.8 }}
                         className="text-center mb-12"
                     >
-                        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-black">
                             {categoryTitle}
                         </h1>
                         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">

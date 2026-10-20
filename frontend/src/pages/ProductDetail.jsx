@@ -81,9 +81,9 @@ const ProductDetail = () => {
 
         for (let i = 0; i < 5; i++) {
             if (i < fullStars) {
-                stars.push(<span key={i} className="text-yellow-400 text-lg">★</span>);
+                stars.push(<span key={i} className="text-black text-lg">★</span>);
             } else if (i === fullStars && hasHalfStar) {
-                stars.push(<span key={i} className="text-yellow-300 text-lg">★</span>);
+                stars.push(<span key={i} className="text-neutral-400 text-lg">★</span>);
             } else {
                 stars.push(<span key={i} className="text-gray-300 text-lg">☆</span>);
             }
@@ -143,7 +143,7 @@ const ProductDetail = () => {
     return (
         <div className="min-h-screen bg-gray-50">
             <Navbar />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24 md:pt-28">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-24 md:pt-40">
                 <button
                     onClick={() => navigate(-1)}
                     className="mb-8 flex items-center text-gray-600 hover:text-gray-900 transition-colors cursor-pointer"
@@ -214,7 +214,7 @@ const ProductDetail = () => {
                         {product.impression && (
                             <div className="flex items-center space-x-2">
                                 <span className="text-gray-600">Inspired by:</span>
-                                <span className="bg-amber-50 px-3 py-1 rounded-full text-sm font-medium text-amber-800">
+                                <span className="bg-neutral-100 px-3 py-1 rounded-full text-sm font-medium text-black">
                                     {product.impression}
                                 </span>
                             </div>
@@ -330,7 +330,7 @@ const ProductDetail = () => {
                                 <div>
                                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Product Description</h3>
                                     {product.impression && (
-                                        <p className="text-amber-700 font-medium mb-3">
+                                        <p className="text-black font-medium mb-3">
                                             Our impression of {product.impression}
                                         </p>
                                     )}
@@ -443,7 +443,7 @@ const ProductDetail = () => {
                                             <div key={review._id} className="border border-gray-100 rounded-lg p-5 bg-gray-50">
                                                 <div className="flex items-center justify-between mb-2">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 rounded-full bg-amber-100 flex items-center justify-center font-bold text-amber-700 text-sm">
+                                                        <div className="w-9 h-9 rounded-full bg-neutral-100 flex items-center justify-center font-bold text-black text-sm">
                                                             {review.reviewerName.charAt(0).toUpperCase()}
                                                         </div>
                                                         <div>
@@ -453,7 +453,7 @@ const ProductDetail = () => {
                                                     </div>
                                                     <div className="flex">
                                                         {[1,2,3,4,5].map(s => (
-                                                            <span key={s} className={s <= review.rating ? 'text-amber-400' : 'text-gray-300'}>★</span>
+                                                            <span key={s} className={s <= review.rating ? 'text-black' : 'text-gray-300'}>★</span>
                                                         ))}
                                                     </div>
                                                 </div>
@@ -505,7 +505,7 @@ const ProductDetail = () => {
                                                             type="button"
                                                             onClick={() => setReviewForm(f => ({ ...f, rating: star }))}
                                                             className={`text-2xl transition-colors cursor-pointer ${
-                                                                star <= reviewForm.rating ? 'text-amber-400' : 'text-gray-300 hover:text-amber-300'
+                                                                star <= reviewForm.rating ? 'text-black' : 'text-gray-300 hover:text-neutral-500'
                                                             }`}
                                                         >
                                                             ★
@@ -535,7 +535,7 @@ const ProductDetail = () => {
                                                 {reviewSubmitting ? 'Submitting...' : 'Submit Review'}
                                             </button>
                                             <p className="text-xs text-gray-400 flex items-center gap-1">
-                                                <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg className="w-4 h-4 text-black" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                                                 </svg>
                                                 Reviews are reviewed by our team before being published.

@@ -18,7 +18,7 @@ const UserHome = () => {
         {
             title: "Authentic Oud",
             subtitle: "Discover our signature collection",
-            image: "/hero.jpg"
+            image: "/newbg_forhomepage.jpeg"
         },
         {
             title: "Luxury Fragrances",
@@ -29,9 +29,11 @@ const UserHome = () => {
     // set slideshow
     useEffect(() => {
         setIsLoaded(true);
+        // preload so a slide is fully loaded before it fades in
+        heroSlides.forEach(({ image }) => { new Image().src = image; });
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-        }, 5000);
+        }, 8000);
         return () => clearInterval(timer);
     }, []);
 
@@ -66,19 +68,19 @@ const UserHome = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="min-h-screen bg-white">
             <Navbar />
             {/* Hero Section */}
-            <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-20">
+            <section className="relative h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-32">
                 <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30 z-10"></div>
 
-                <AnimatePresence mode="wait">
+                <AnimatePresence initial={false}>
                     <motion.div
                         key={currentSlide}
-                        initial={{ opacity: 0, scale: 1.1 }}
+                        initial={{ opacity: 0, scale: 1.05 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 1.5, ease: "easeInOut" }}
                         className="absolute inset-0 bg-cover bg-center"
                         style={{ backgroundImage: `url(${heroSlides[currentSlide].image})` }}
                     />
@@ -90,7 +92,7 @@ const UserHome = () => {
                         initial={{ y: 50, opacity: 0 }}
                         animate={{ y: 0, opacity: 1 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-amber-300 to-yellow-300 bg-clip-text text-transparent"
+                        className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-4 md:mb-6 text-white"
                     >
                         {heroSlides[currentSlide].title}
                     </motion.h1>
@@ -112,7 +114,7 @@ const UserHome = () => {
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => navigate('/products')}
-                        className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold shadow-2xl hover:shadow-amber-500/25 transition-all cursor-pointer"
+                        className="bg-white text-black hover:bg-neutral-200 px-8 md:px-12 py-3 md:py-4 rounded-full text-base md:text-lg font-semibold shadow-2xl transition-all cursor-pointer"
                     >
                         Explore Collection
                     </motion.button>
@@ -124,7 +126,7 @@ const UserHome = () => {
                         {heroSlides.map((_, index) => (
                             <motion.button
                                 key={index}
-                                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${index === currentSlide ? 'bg-amber-400' : 'bg-white/50'
+                                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${index === currentSlide ? 'bg-white' : 'bg-white/40'
                                     }`}
                                 whileHover={{ scale: 1.2 }}
                                 onClick={() => setCurrentSlide(index)}
@@ -136,7 +138,7 @@ const UserHome = () => {
                 {/* Floating Elements - Hidden on mobile */}
                 <motion.div
                     animate={floatAnimation}
-                    className="hidden lg:block absolute top-1/4 left-10 text-amber-300/30"
+                    className="hidden lg:block absolute top-1/4 left-10 text-white/20"
                 >
                     <svg className="w-8 lg:w-12 h-8 lg:h-12" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -145,7 +147,7 @@ const UserHome = () => {
 
                 <motion.div
                     animate={{ ...floatAnimation, transition: { ...floatAnimation.transition, delay: 1 } }}
-                    className="hidden lg:block absolute top-1/3 right-16 text-yellow-300/30"
+                    className="hidden lg:block absolute top-1/3 right-16 text-white/20"
                 >
                     <svg className="w-6 lg:w-8 h-6 lg:h-8" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -165,7 +167,7 @@ const UserHome = () => {
                     >
                         <motion.h2
                             variants={itemVariants}
-                            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent"
+                            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 text-black"
                         >
                             Featured Collection
                         </motion.h2>
@@ -216,7 +218,7 @@ const UserHome = () => {
             </section>
 
             {/* About Section */}
-            <section className="py-12 md:py-20 bg-gradient-to-r from-amber-100 to-yellow-100">
+            <section className="py-12 md:py-20 bg-neutral-100">
                 <div className="container mx-auto px-4 md:px-6">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
                         <motion.div
@@ -226,7 +228,7 @@ const UserHome = () => {
                             viewport={{ once: true }}
                             className="order-2 lg:order-1"
                         >
-                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 md:mb-6 text-black">
                                 Our Story
                             </h2>
                             <p className="text-base md:text-lg text-gray-700 mb-4 md:mb-6 leading-relaxed">
@@ -238,7 +240,7 @@ const UserHome = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-gradient-to-r from-amber-600 to-yellow-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer"
+                                className="bg-gradient-to-r from-black to-neutral-800 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all cursor-pointer"
                             >
                                 Learn More
                             </motion.button>
@@ -258,7 +260,7 @@ const UserHome = () => {
                                 className="w-full h-64 sm:h-80 md:h-96 lg:h-auto rounded-2xl shadow-2xl object-cover"
                             />
                             <div className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-white p-4 md:p-6 rounded-2xl shadow-xl">
-                                <div className="text-2xl md:text-3xl font-bold text-amber-600">10+</div>
+                                <div className="text-2xl md:text-3xl font-bold text-black">10+</div>
                                 <div className="text-sm md:text-base text-gray-600">Years of Excellence</div>
                             </div>
                         </motion.div>
@@ -267,7 +269,7 @@ const UserHome = () => {
             </section>
 
             {/* Newsletter */}
-            {/* <section className="py-12 md:py-20 bg-gradient-to-r from-amber-600 to-yellow-600">
+            {/* <section className="py-12 md:py-20 bg-gradient-to-r from-black to-neutral-800">
                 <div className="container mx-auto px-4 md:px-6 text-center">
                     <motion.div
                         initial={{ y: 50, opacity: 0 }}
@@ -291,7 +293,7 @@ const UserHome = () => {
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className="bg-white text-amber-600 px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all text-sm md:text-base"
+                                className="bg-white text-black px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold shadow-lg hover:shadow-xl transition-all text-sm md:text-base"
                             >
                                 Subscribe
                             </motion.button>

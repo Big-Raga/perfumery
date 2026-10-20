@@ -290,7 +290,7 @@ const AdminHome = () => {
                                                     <span className="font-semibold text-sm text-gray-900">{review.reviewerName}</span>
                                                     <div className="flex">
                                                         {[1,2,3,4,5].map(s => (
-                                                            <span key={s} className={s <= review.rating ? 'text-amber-400 text-sm' : 'text-gray-300 text-sm'}>★</span>
+                                                            <span key={s} className={s <= review.rating ? 'text-black text-sm' : 'text-gray-300 text-sm'}>★</span>
                                                         ))}
                                                     </div>
                                                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
@@ -320,7 +320,7 @@ const AdminHome = () => {
                                                     <button
                                                         onClick={() => handleRejectReview(review._id)}
                                                         disabled={rejectReviewMutation.isPending}
-                                                        className="text-xs bg-amber-600 text-white px-3 py-1.5 rounded-md hover:bg-amber-700 disabled:opacity-50 font-medium"
+                                                        className="text-xs bg-black text-white px-3 py-1.5 rounded-md hover:bg-neutral-800 disabled:opacity-50 font-medium"
                                                     >
                                                         Reject
                                                     </button>

@@ -3,9 +3,7 @@ import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
-const WHATSAPP_NUMBER = '923480007566';
-const WHATSAPP_QR_LINK = 'https://wa.me/qr/UP4PS6AIEGBTC1';
-const INSTAGRAM_URL = 'https://www.instagram.com/houseofouds_aj/';
+import { WHATSAPP_NUMBER, WHATSAPP_QR_LINK, INSTAGRAM_URL } from '../utils/contact';
 
 const ContactUs = () => {
     const handleWhatsAppClick = () => {
@@ -14,9 +12,9 @@ const ContactUs = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="min-h-screen bg-white">
             <Navbar />
-            <div className="pt-24 md:pt-28 pb-16">
+            <div className="pt-24 md:pt-40 pb-16">
                 {/* Hero Section */}
                 <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white py-16 md:py-24">
                     <div className="max-w-4xl mx-auto px-4 text-center">
@@ -24,7 +22,7 @@ const ContactUs = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6 }}
-                            className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent"
+                            className="text-4xl md:text-5xl font-bold mb-4 text-black"
                         >
                             Get in Touch
                         </motion.h1>
@@ -105,13 +103,13 @@ const ContactUs = () => {
                                         <svg className="w-20 h-20 text-pink-400 mb-3" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                                         </svg>
-                                        <span className="text-gray-700 font-semibold text-lg">@houseofouds_aj</span>
+                                        <span className="text-gray-700 font-semibold text-lg">@houseofoudbyaljabbal</span>
                                         <span className="text-gray-500 text-sm mt-1">Follow us for updates</span>
                                     </div>
                                 </div>
                                 <div className="mb-6">
                                     <p className="text-gray-600 text-sm mb-1">Follow us on Instagram</p>
-                                    <p className="text-xl font-bold text-gray-900">@houseofouds_aj</p>
+                                    <p className="text-xl font-bold text-gray-900">@houseofoudbyaljabbal</p>
                                 </div>
                                 <a
                                     href={INSTAGRAM_URL}
@@ -141,22 +139,22 @@ const ContactUs = () => {
                         </p>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="flex flex-col items-center p-4">
-                                <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-3">
-                                    <span className="text-2xl font-bold text-amber-600">1</span>
+                                <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mb-3">
+                                    <span className="text-2xl font-bold text-black">1</span>
                                 </div>
                                 <h4 className="font-semibold text-gray-900 mb-1">Browse</h4>
                                 <p className="text-gray-500 text-sm">Explore our perfume collection and find your signature scent</p>
                             </div>
                             <div className="flex flex-col items-center p-4">
-                                <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-3">
-                                    <span className="text-2xl font-bold text-amber-600">2</span>
+                                <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mb-3">
+                                    <span className="text-2xl font-bold text-black">2</span>
                                 </div>
                                 <h4 className="font-semibold text-gray-900 mb-1">Reach Out</h4>
                                 <p className="text-gray-500 text-sm">Message us on WhatsApp or Instagram with your order</p>
                             </div>
                             <div className="flex flex-col items-center p-4">
-                                <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mb-3">
-                                    <span className="text-2xl font-bold text-amber-600">3</span>
+                                <div className="w-14 h-14 bg-neutral-100 rounded-full flex items-center justify-center mb-3">
+                                    <span className="text-2xl font-bold text-black">3</span>
                                 </div>
                                 <h4 className="font-semibold text-gray-900 mb-1">Receive</h4>
                                 <p className="text-gray-500 text-sm">We&apos;ll confirm your order and deliver it to your doorstep</p>

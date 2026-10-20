@@ -37,7 +37,7 @@ const Footer = () => {
                     >
                         <div className="flex items-center space-x-3 mb-4">
                             <img src="/logo.svg" alt="House of Oud" className="h-6 md:h-8 w-6 md:w-8" />
-                            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text text-transparent">
+                            <span className="text-lg md:text-xl font-bold bg-gradient-to-r from-white to-white bg-clip-text text-transparent">
                                 House of Oud
                             </span>
                         </div>
@@ -60,7 +60,7 @@ const Footer = () => {
                                 <div key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-amber-400 transition-colors text-xs md:text-sm whitespace-nowrap"
+                                        className="text-gray-400 hover:text-white transition-colors text-xs md:text-sm whitespace-nowrap"
                                     >
                                         {item.name}
                                     </Link>
@@ -83,7 +83,7 @@ const Footer = () => {
                                 <li key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-amber-400 transition-colors text-sm md:text-base"
+                                        className="text-gray-400 hover:text-white transition-colors text-sm md:text-base"
                                     >
                                         {item.name}
                                     </Link>
@@ -106,7 +106,7 @@ const Footer = () => {
                                 <li key={item.name}>
                                     <Link 
                                         to={item.path} 
-                                        className="text-gray-400 hover:text-amber-400 transition-colors text-sm md:text-base"
+                                        className="text-gray-400 hover:text-white transition-colors text-sm md:text-base"
                                     >
                                         {item.name}
                                     </Link>

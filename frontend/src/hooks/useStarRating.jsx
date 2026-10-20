@@ -8,9 +8,9 @@ const useStarRating = () => {
 
         for (let i = 0; i < 5; i++) {
             if (i < fullStars) {
-                stars.push(<span key={i} className="text-amber-400">★</span>);
+                stars.push(<span key={i} className="text-black">★</span>);
             } else if (i === fullStars && hasHalfStar) {
-                stars.push(<span key={i} className="text-amber-400">★</span>);
+                stars.push(<span key={i} className="text-black">★</span>);
             } else {
                 stars.push(<span key={i} className="text-gray-300">☆</span>);
             }

@@ -59,7 +59,7 @@ const ProductCard = ({ product, index = 0 }) => {
                     {/* Category and Type */}
                     <div className="flex items-center gap-2 mb-2">
                         {label && (
-                            <span className="text-xs text-amber-600 uppercase tracking-wide font-medium">
+                            <span className="text-xs text-black uppercase tracking-wide font-medium">
                                 {label}
                             </span>
                         )}
@@ -98,7 +98,7 @@ const ProductCard = ({ product, index = 0 }) => {
                             {formatPrice(product.price)}
                         </span>
                         <button
-                            className="bg-amber-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-amber-600 transition-colors cursor-pointer"
+                            className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-neutral-800 transition-colors cursor-pointer"
                             onClick={handleViewDetails}
                         >
                             View Details

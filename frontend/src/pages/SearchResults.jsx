@@ -53,10 +53,10 @@ const SearchResults = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="min-h-screen bg-white">
             <Navbar />
 
-            <div className="pt-24 pb-12">
+            <div className="pt-24 md:pt-40 pb-12">
                 <div className="container mx-auto px-4 md:px-6">
                     {/* Search Header */}
                     <motion.div
@@ -65,7 +65,7 @@ const SearchResults = () => {
                         transition={{ duration: 0.8 }}
                         className="text-center mb-12"
                     >
-                        <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-amber-600 to-yellow-600 bg-clip-text text-transparent">
+                        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-black">
                             Search Results
                         </h1>
 
@@ -77,12 +77,12 @@ const SearchResults = () => {
                                     value={searchInput}
                                     onChange={handleInputChange}
                                     placeholder="Search for perfumes, brands, notes..."
-                                    className="w-full px-6 py-4 pr-14 text-lg border-2 border-amber-200 rounded-full focus:outline-none focus:border-amber-500 focus:ring-4 focus:ring-amber-100 transition-all"
+                                    className="w-full px-6 py-4 pr-14 text-lg border-2 border-neutral-300 rounded-full focus:outline-none focus:border-black focus:ring-4 focus:ring-neutral-200 transition-all"
                                     autoFocus
                                 />
                                 <button
                                     type="submit"
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-amber-500 text-white p-3 rounded-full hover:bg-amber-600 transition-colors cursor-pointer"
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black text-white p-3 rounded-full hover:bg-neutral-800 transition-colors cursor-pointer"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -101,7 +101,7 @@ const SearchResults = () => {
                                                 setSearchInput(suggestion);
                                                 navigate(`/search?q=${encodeURIComponent(suggestion)}`);
                                             }}
-                                            className="text-sm bg-amber-100 text-amber-700 px-3 py-1 rounded-full hover:bg-amber-200 transition-colors cursor-pointer"
+                                            className="text-sm bg-neutral-100 text-black px-3 py-1 rounded-full hover:bg-neutral-200 transition-colors cursor-pointer"
                                         >
                                             {suggestion}
                                         </button>
@@ -148,7 +148,7 @@ const SearchResults = () => {
                                                 setSearchInput(suggestion);
                                                 navigate(`/search?q=${suggestion}`);
                                             }}
-                                            className="bg-amber-100 text-amber-700 px-4 py-2 rounded-full hover:bg-amber-200 transition-colors cursor-pointer"
+                                            className="bg-neutral-100 text-black px-4 py-2 rounded-full hover:bg-neutral-200 transition-colors cursor-pointer"
                                         >
                                             {suggestion}
                                         </button>
@@ -184,13 +184,13 @@ const SearchResults = () => {
                             <div className="flex flex-wrap gap-4 justify-center">
                                 <button
                                     onClick={() => navigate('/products')}
-                                    className="bg-white text-amber-600 border border-amber-600 px-6 py-3 rounded-full font-semibold hover:bg-amber-50 transition-all cursor-pointer"
+                                    className="bg-white text-black border border-black px-6 py-3 rounded-full font-semibold hover:bg-neutral-100 transition-all cursor-pointer"
                                 >
                                     Browse All Products
                                 </button>
                                 <button
                                     onClick={() => navigate('/products/featured')}
-                                    className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all cursor-pointer"
+                                    className="bg-gradient-to-r from-black to-neutral-800 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all cursor-pointer"
                                 >
                                     View Featured
                                 </button>
