@@ -49,12 +49,8 @@ export const adminProductAPI = {
 
 // Image Upload APIs
 export const imageAPI = {
-  uploadImage: (formData) => api.post("/images/upload", formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  }),
-  deleteImage: (filename) => api.delete(`/images/${filename}`),
+  uploadImage: (formData) => api.post("/images/upload", formData),
+  deleteImage: (id) => api.delete(`/images/${id}`),
 };
 
 // Admin Review Management APIs

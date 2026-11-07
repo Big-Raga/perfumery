@@ -23,7 +23,7 @@ const BACKUP_DIR = path.join(__dirname, 'backups');
 
 const FEATURED = ['tolipeer', 'velvet'];
 // Shown until a real photo is uploaded via the admin panel (served by the frontend)
-const PLACEHOLDER_PICTURE = '/logo.webp';
+const PLACEHOLDER_PICTURE = '/logo_white.png';
 const DEFAULT_STOCK = 100;
 // CSV name -> existing DB title, where the spelling differs
 const TITLE_ALIASES = { millionaire: 'millionare' };

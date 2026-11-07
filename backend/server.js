@@ -9,6 +9,9 @@ const loggingMiddleware = require('./middleware/loggingMiddleware');
 
 const app = express();
 
+// Render sits behind a proxy; trust it so req.protocol is https for image URLs
+app.set('trust proxy', 1);
+
 // Connect to MongoDB
 connectDB();
 

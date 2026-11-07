@@ -1,6 +1,10 @@
 const Product = require("../../models/product");
 const Category = require("../../models/category");
 const Type = require("../../models/Type");
+const { deleteUploadedImageIfUnused } = require("./imageUploadController");
+
+// Shown until a real photo is uploaded (served by the frontend)
+const PLACEHOLDER_PICTURE = "/logo_white.png";
 
 // Normalise catalogue fields: empty selections become null, and ouds have no range/gender
 const normaliseCatalogFields = (data) => {
@@ -66,7 +70,7 @@ const createProduct = async (req, res) => {
             title,
             description,
             impression,
-            picture,
+            picture = PLACEHOLDER_PICTURE,
             price,
             category,
             productLine,
@@ -79,10 +83,10 @@ const createProduct = async (req, res) => {
         } = normaliseCatalogFields(req.body);
 
         // Validate required fields
-        if (!title || !picture || !price || !stock) {
+        if (!title || !price || !stock) {
             return res.status(400).json({
                 data: null,
-                message: "Missing required fields: title, picture, price, stock"
+                message: "Missing required fields: title, price, stock"
             });
         }
 
@@ -91,7 +95,7 @@ const createProduct = async (req, res) => {
             title,
             description,
             impression,
-            picture,
+            picture: picture || PLACEHOLDER_PICTURE,
             price,
             category,
             productLine,
@@ -127,6 +131,9 @@ const updateProduct = async (req, res) => {
         // Remove empty string fields that are ObjectId refs
         if (updateData.category === '') delete updateData.category;
         if (updateData.Type === '') delete updateData.Type;
+        if (updateData.picture === '') updateData.picture = PLACEHOLDER_PICTURE;
+
+        const previous = await Product.findById(id).select('picture');
 
         const updatedProduct = await Product.findByIdAndUpdate(
             id,
@@ -139,6 +146,10 @@ const updateProduct = async (req, res) => {
                 data: null,
                 message: "Product not found"
             });
+        }
+
+        if (previous.picture !== updatedProduct.picture) {
+            await deleteUploadedImageIfUnused(previous.picture);
         }
 
         res.status(200).json({
@@ -167,6 +178,8 @@ const deleteProduct = async (req, res) => {
                 message: "Product not found"
             });
         }
+
+        await deleteUploadedImageIfUnused(deletedProduct.picture);
 
         res.status(200).json({
             data: null,

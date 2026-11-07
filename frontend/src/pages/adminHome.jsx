@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useAdminLogout, useAdminProducts, useAdminTypes, useCreateProduct, useUpdateProduct, useDeleteProduct, useUploadImage, useAdminReviews, useApproveReview, useRejectReview, useDeleteReview } from '../hooks/adminHooks';
-import { getProductLabel, PRODUCT_LINES, RANGES, GENDERS } from '../utils/catalog';
+import { getProductLabel, PRODUCT_LINES, RANGES, GENDERS, PLACEHOLDER_PICTURE } from '../utils/catalog';
+import { imageAPI } from '../api/adminAPI';
+import ProductImage from '../components/ProductImage';
 
 const AdminHome = () => {
     const [activeTab, setActiveTab] = useState('products');
@@ -171,7 +173,7 @@ const AdminHome = () => {
                                                 <tr key={product._id} className="hover:bg-gray-50">
                                                     <td className="px-6 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
-                                                            <img className="h-10 w-10 rounded-lg object-cover" src={product.picture} alt={product.title} />
+                                                            <ProductImage className="h-10 w-10 rounded-lg" placeholderClassName="object-contain bg-black p-1" src={product.picture} alt={product.title} />
                                                             <div className="ml-4">
                                                                 <div className="text-sm font-medium text-gray-900">{product.title}</div>
                                                                 <div className="text-sm text-gray-500">{product.description?.substring(0, 50)}...</div>
@@ -278,8 +280,8 @@ const AdminHome = () => {
                                         <div key={review._id} className="p-5 flex flex-col sm:flex-row sm:items-start gap-4">
                                             {/* Product info */}
                                             <div className="flex items-center gap-3 sm:w-48 shrink-0">
-                                                {review.product?.picture && (
-                                                    <img src={review.product.picture} alt={review.product.title} className="w-10 h-10 rounded-lg object-cover" />
+                                                {review.product && (
+                                                    <ProductImage src={review.product.picture} alt={review.product.title} className="w-10 h-10 rounded-lg" placeholderClassName="object-contain bg-black p-1" />
                                                 )}
                                                 <span className="text-xs font-medium text-gray-700 line-clamp-2">{review.product?.title || 'Unknown Product'}</span>
                                             </div>
@@ -368,6 +370,10 @@ const AdminHome = () => {
     );
 };
 
+// Must match the limits in the backend's imageUploadController
+const MAX_IMAGE_SIZE_MB = 5;
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+
 // Product Modal Component
 const ProductModal = ({ product, types, onClose, createMutation, updateMutation }) => {
     const [formData, setFormData] = useState({
@@ -386,34 +392,56 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
     });
 
     const [selectedFile, setSelectedFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(product?.picture || '');
+    const [filePreview, setFilePreview] = useState('');
+    const [imageError, setImageError] = useState('');
     const [uploadingImage, setUploadingImage] = useState(false);
 
     const uploadImageMutation = useUploadImage();
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-            // Create preview URL
-            const previewUrl = URL.createObjectURL(file);
-            setImagePreview(previewUrl);
-        }
+    const clearSelectedFile = () => {
+        if (filePreview) URL.revokeObjectURL(filePreview);
+        setSelectedFile(null);
+        setFilePreview('');
     };
 
-    const uploadImage = async () => {
-        if (!selectedFile) return null;
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
 
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            setImageError('Please choose a JPEG, PNG, GIF or WebP image.');
+            return;
+        }
+        if (file.size > MAX_IMAGE_SIZE_MB * 1024 * 1024) {
+            setImageError(`Image is too large. Maximum size is ${MAX_IMAGE_SIZE_MB}MB.`);
+            return;
+        }
+
+        clearSelectedFile();
+        setImageError('');
+        setSelectedFile(file);
+        setFilePreview(URL.createObjectURL(file));
+    };
+
+    // Back to the logo placeholder
+    const removeImage = () => {
+        clearSelectedFile();
+        setImageError('');
+        setFormData(prev => ({ ...prev, picture: '' }));
+    };
+
+    // Uploads the selected file and returns { id, imageUrl }, or null if it failed
+    const uploadImage = async () => {
         setUploadingImage(true);
         try {
             const uploadData = new FormData();
             uploadData.append('image', selectedFile);
-            uploadData.append('title', formData.title || 'product');
 
             const response = await uploadImageMutation.mutateAsync(uploadData);
-            return response.data.data.imageUrl;
+            return response.data.data;
         } catch (error) {
-            console.error('Image upload failed:', error);
+            setImageError(error.response?.data?.message || 'Image upload failed. Please try again.');
             return null;
         } finally {
             setUploadingImage(false);
@@ -424,21 +452,23 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
         e.preventDefault();
 
         let pictureUrl = formData.picture;
+        let uploaded = null;
 
         // Upload image if a new file is selected
         if (selectedFile) {
-            const uploadedImageUrl = await uploadImage();
-            if (uploadedImageUrl) {
-                pictureUrl = uploadedImageUrl;
-            } else {
-                alert('Image upload failed. Please try again.');
-                return;
-            }
+            uploaded = await uploadImage();
+            if (!uploaded) return;
+            pictureUrl = uploaded.imageUrl;
         }
+
+        // Don't leave an unused image behind if saving the product fails
+        const discardUpload = () => {
+            if (uploaded) imageAPI.deleteImage(uploaded.id).catch(() => {});
+        };
 
         const submitData = {
             ...formData,
-            picture: pictureUrl,
+            picture: pictureUrl || PLACEHOLDER_PICTURE,
             price: parseFloat(formData.price),
             stock: parseInt(formData.stock)
         };
@@ -458,6 +488,7 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
             updateMutation.mutate({ id: product._id, productData: submitData }, {
                 onSuccess: () => onClose('Product updated successfully'),
                 onError: (err) => {
+                    discardUpload();
                     alert(err.response?.data?.message || 'Failed to update product');
                 }
             });
@@ -465,6 +496,7 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
             createMutation.mutate(submitData, {
                 onSuccess: () => onClose('Product created successfully'),
                 onError: (err) => {
+                    discardUpload();
                     alert(err.response?.data?.message || 'Failed to create product');
                 }
             });
@@ -528,24 +560,36 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
                             <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
 
                             {/* Image Preview */}
-                            {imagePreview && (
-                                <div className="mb-3">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-32 h-32 object-cover rounded-lg border border-gray-300"
-                                    />
-                                </div>
-                            )}
+                            <div className="mb-3 flex items-end gap-3">
+                                <ProductImage
+                                    src={filePreview || formData.picture}
+                                    alt="Preview"
+                                    className="w-32 h-32 rounded-lg border border-gray-300"
+                                    placeholderClassName="object-contain bg-black p-3"
+                                />
+                                {(selectedFile || (formData.picture && formData.picture !== PLACEHOLDER_PICTURE)) && (
+                                    <button
+                                        type="button"
+                                        onClick={removeImage}
+                                        className="text-sm text-red-600 hover:text-red-800"
+                                    >
+                                        Remove image
+                                    </button>
+                                )}
+                            </div>
 
                             {/* File Input */}
                             <input
                                 type="file"
-                                accept="image/*"
+                                accept={ALLOWED_IMAGE_TYPES.join(',')}
                                 onChange={handleFileChange}
                                 className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Or keep existing image URL below</p>
+                            {selectedFile && (
+                                <p className="text-xs text-gray-600 mt-1">{selectedFile.name} will be uploaded when you save.</p>
+                            )}
+                            {imageError && <p className="text-xs text-red-600 mt-1">{imageError}</p>}
+                            <p className="text-xs text-gray-500 mt-1">JPEG, PNG, GIF or WebP, up to {MAX_IMAGE_SIZE_MB}MB. Products without an image show the logo.</p>
                         </div>
 
                         <div>
@@ -555,6 +599,7 @@ const ProductModal = ({ product, types, onClose, createMutation, updateMutation 
                                 name="picture"
                                 value={formData.picture}
                                 onChange={handleChange}
+                                disabled={!!selectedFile}
                                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                             />
                         </div>

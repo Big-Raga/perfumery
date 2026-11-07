@@ -2,13 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import useStarRating from '../hooks/useStarRating.jsx';
-import { getProductLabel, PLACEHOLDER_PICTURE } from '../utils/catalog';
+import { getProductLabel } from '../utils/catalog';
+import ProductImage from './ProductImage';
 
 const ProductCard = ({ product, index = 0 }) => {
     const { renderStars } = useStarRating();
     const navigate = useNavigate();
     const label = getProductLabel(product);
-    const isPlaceholder = product.picture === PLACEHOLDER_PICTURE;
 
     const formatPrice = (price) => {
         return `Rs.${price.toLocaleString('en-PK')}`;
@@ -35,10 +35,10 @@ const ProductCard = ({ product, index = 0 }) => {
         >
             <div>
                 <div className="relative overflow-hidden">
-                    <img
+                    <ProductImage
                         src={product.picture}
                         alt={product.title}
-                        className={`w-full h-64 group-hover:scale-105 transition-transform duration-500 ${isPlaceholder ? 'object-contain bg-black p-10' : 'object-cover'}`}
+                        className="w-full h-64 group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

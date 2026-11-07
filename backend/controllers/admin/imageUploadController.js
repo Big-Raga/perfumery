@@ -1,57 +1,51 @@
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const mongoose = require('mongoose');
+const Image = require('../../models/image');
+const Product = require('../../models/product');
 
-// Configure multer for image uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        const uploadPath = path.join(__dirname, '../../images');
-        // Ensure directory exists
-        if (!fs.existsSync(uploadPath)) {
-            fs.mkdirSync(uploadPath, { recursive: true });
+const MAX_SIZE_MB = 5;
+const ALLOWED_MIMES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+
+// Keep the file in memory; it is stored in MongoDB, not on disk
+const upload = multer({
+    storage: multer.memoryStorage(),
+    fileFilter: (req, file, cb) => {
+        if (ALLOWED_MIMES.includes(file.mimetype)) {
+            cb(null, true);
+        } else {
+            cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.'), false);
         }
-        cb(null, uploadPath);
     },
-    filename: (req, file, cb) => {
-        // Get the product title from request body
-        const productTitle = req.body.title || 'product';
-
-        // Sanitize the filename (remove special characters and spaces)
-        const sanitizedTitle = productTitle
-            .toLowerCase()
-            .replace(/[^a-z0-9]/g, '-')
-            .replace(/-+/g, '-')
-            .replace(/^-|-$/g, '');
-
-        // Get file extension
-        const ext = path.extname(file.originalname);
-
-        // Create filename: productname-timestamp.ext
-        const filename = `${sanitizedTitle}-${Date.now()}${ext}`;
-
-        cb(null, filename);
-    }
+    limits: { fileSize: MAX_SIZE_MB * 1024 * 1024 },
 });
 
-// File filter for images only
-const fileFilter = (req, file, cb) => {
-    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-
-    if (allowedMimes.includes(file.mimetype)) {
-        cb(null, true);
-    } else {
-        cb(new Error('Invalid file type. Only JPEG, PNG, GIF, and WebP images are allowed.'), false);
-    }
+// Runs multer and turns its errors (too large, wrong type) into JSON responses
+const handleUpload = (req, res, next) => {
+    upload.single('image')(req, res, (err) => {
+        if (!err) return next();
+        const message = err.code === 'LIMIT_FILE_SIZE'
+            ? `Image is too large. Maximum size is ${MAX_SIZE_MB}MB.`
+            : err.message;
+        res.status(400).json({ data: null, message });
+    });
 };
 
-// Configure multer
-const upload = multer({
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024, // 5MB limit
-    }
-});
+// Public URL an uploaded image is served from
+const imageUrlFor = (req, id) => `${req.protocol}://${req.get('host')}/api/images/${id}`;
+
+// The image id in a picture URL, if it points at an uploaded image
+const uploadedImageId = (picture) => {
+    const match = /\/api\/images\/([a-f0-9]{24})$/.exec(picture || '');
+    return match ? match[1] : null;
+};
+
+// Removes an uploaded image once no product uses it any more
+const deleteUploadedImageIfUnused = async (picture) => {
+    const id = uploadedImageId(picture);
+    if (!id) return;
+    const stillUsed = await Product.exists({ picture: { $regex: `/api/images/${id}$` } });
+    if (!stillUsed) await Image.findByIdAndDelete(id);
+};
 
 // Upload single image endpoint
 const uploadImage = async (req, res) => {
@@ -63,20 +57,25 @@ const uploadImage = async (req, res) => {
             });
         }
 
-        // Return the image URL that can be used to access the image
-        const imageUrl = `${req.protocol}://${req.get('host')}/static/${req.file.filename}`;
+        const image = await Image.create({
+            data: req.file.buffer,
+            contentType: req.file.mimetype,
+            originalName: req.file.originalname,
+            size: req.file.size,
+        });
 
         res.status(200).json({
             data: {
-                filename: req.file.filename,
-                imageUrl: imageUrl,
-                originalName: req.file.originalname,
-                size: req.file.size
+                id: image._id,
+                imageUrl: imageUrlFor(req, image._id),
+                originalName: image.originalName,
+                size: image.size
             },
             message: 'Image uploaded successfully'
         });
 
     } catch (error) {
+        console.error('Image upload error:', error);
         res.status(500).json({
             data: null,
             message: 'Error uploading image'
@@ -84,15 +83,38 @@ const uploadImage = async (req, res) => {
     }
 };
 
+// Serve an uploaded image (public)
+const getImage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (!mongoose.isValidObjectId(id)) {
+            return res.status(404).json({ data: null, message: 'Image not found' });
+        }
+
+        const image = await Image.findById(id);
+        if (!image) {
+            return res.status(404).json({ data: null, message: 'Image not found' });
+        }
+
+        // An id always refers to the same image, so browsers can cache it for good
+        res.set({
+            'Content-Type': image.contentType,
+            'Cache-Control': 'public, max-age=31536000, immutable',
+            'Cross-Origin-Resource-Policy': 'cross-origin',
+        });
+        res.send(image.data);
+    } catch (error) {
+        res.status(500).json({ data: null, message: 'Error loading image' });
+    }
+};
+
 // Delete image endpoint
 const deleteImage = async (req, res) => {
     try {
-        const { filename } = req.params;
-        const imagePath = path.join(__dirname, '../../images', filename);
+        const { id } = req.params;
+        const image = mongoose.isValidObjectId(id) && await Image.findByIdAndDelete(id);
 
-        // Check if file exists
-        if (fs.existsSync(imagePath)) {
-            fs.unlinkSync(imagePath);
+        if (image) {
             res.status(200).json({
                 data: null,
                 message: 'Image deleted successfully'
@@ -113,7 +135,9 @@ const deleteImage = async (req, res) => {
 };
 
 module.exports = {
-    upload,
+    handleUpload,
     uploadImage,
-    deleteImage
+    getImage,
+    deleteImage,
+    deleteUploadedImageIfUnused
 };

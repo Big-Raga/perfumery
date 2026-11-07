@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, submitReview, getProductReviews } from '../api/productAPI';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
+import ProductImage from '../components/ProductImage';
 import { getProductLabel } from '../utils/catalog';
 import { WHATSAPP_NUMBER, INSTAGRAM_DM_URL } from '../utils/contact';
 
@@ -160,10 +161,11 @@ const ProductDetail = () => {
                     {/* Product Images */}
                     <div className="space-y-4">
                         <div className="aspect-square bg-white rounded-lg overflow-hidden shadow-lg">
-                            <img
+                            <ProductImage
                                 src={Array.isArray(product.picture) ? product.picture[selectedImage] : product.picture}
                                 alt={product.title}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full"
+                                placeholderClassName="object-contain bg-black p-16"
                             />
                         </div>
 

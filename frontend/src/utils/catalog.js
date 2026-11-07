@@ -61,4 +61,6 @@ export const getProductLabel = (product) => {
 };
 
 // Products without a real photo use the logo (set by the catalogue seeder)
-export const PLACEHOLDER_PICTURE = '/logo.webp';
+export const PLACEHOLDER_PICTURE = '/logo_white.png';
+// '/logo.webp' was the placeholder before logo_white.png
+export const isPlaceholderPicture = (picture) => !picture || picture === PLACEHOLDER_PICTURE || picture === '/logo.webp';
